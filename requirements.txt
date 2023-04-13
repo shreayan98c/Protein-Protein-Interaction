@@ -1,1 +1,10 @@
 PyTDC==0.3.9
+
+click
+rich
+pre-commit
+black
+flake8
+pytest
+reorder-python-imports
+toml
