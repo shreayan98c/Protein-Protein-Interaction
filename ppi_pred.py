@@ -1,4 +1,4 @@
-# !pip install requirement.txt
+# !pip install -r requirements.txt
 from tdc.multi_pred import PPI
 
 data = PPI(name='HuRI')
