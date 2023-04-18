@@ -16,7 +16,7 @@ class HuRIDataset():
 
         if type == 'train':
             self.data = self.train
-        elif split == 'test':
+        elif type == 'test':
             self.data = self.test
         else:
             self.data = self.valid
