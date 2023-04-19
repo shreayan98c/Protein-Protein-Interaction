@@ -34,3 +34,26 @@ class MyModel(nn.Module):
             x = layer(x)
         x = self.head(x)
         return x
+
+
+class SimpleLinearModel(nn.Module):
+    def __init__(self, levels: list = None, dropout: float = 0.3):
+        super().__init__()
+
+        if levels is None:
+            levels = [50, 25, 3, 1]
+        self.layers = nn.ModuleList()
+
+        prev_channels = 10000
+        for i, l in enumerate(levels):
+            self.layers.append(nn.Linear(prev_channels, l))
+            self.layers.append(nn.ReLU())
+            self.layers.append(nn.Dropout(dropout))
+            prev_channels = l
+
+        self.layers.append(nn.Sigmoid())
+
+    def forward(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
