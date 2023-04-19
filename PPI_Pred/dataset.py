@@ -1,9 +1,10 @@
 import torch
 from tdc.multi_pred import PPI
+from torch.utils.data import Dataset
 
 
-class HuRIDataset():
-    def __init__(self, tokenizer, max_len=5000, data_split='train', thresh=5000, neg_sample=2):
+class HuRIDataset(torch.utils.data.Dataset):
+    def __init__(self, tokenizer, small_subset, max_len=5000, data_split='train', thresh=5000, neg_sample=2):
         self.data = PPI(name='HuRI')
         self.tokenizer = tokenizer
         self.max_len = max_len
@@ -14,6 +15,11 @@ class HuRIDataset():
         self.train = split["train"]
         self.valid = split["valid"]
         self.test = split["test"]
+
+        if small_subset:
+            self.train = self.train[:1000]
+            self.valid = self.valid[:1000]
+            self.test = self.test[:1000]
 
         # find length of each sequence
         self.train['seq1_length'] = self.train['Protein1'].str.len()
