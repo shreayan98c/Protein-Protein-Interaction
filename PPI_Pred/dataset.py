@@ -24,37 +24,38 @@ class HuRIDataset():
         self.valid['seq2_length'] = self.valid['Protein2'].str.len()
 
         # apply threshold to all splits
-        self.train = self.train[self.train['seq1_length'] < self.thresh]
-        self.train = self.train[self.train['seq2_length'] < self.thresh]
-        self.test = self.test[self.test['seq1_length'] < self.thresh]
-        self.test = self.test[self.test['seq2_length'] < self.thresh]
-        self.valid = self.valid[self.valid['seq1_length'] < self.thresh]
-        self.valid = self.valid[self.valid['seq2_length'] < self.thresh]
+        self.train = self.train[self.train['seq1_length'] < self.thresh].reset_index(drop=True)
+        self.train = self.train[self.train['seq2_length'] < self.thresh].reset_index(drop=True)
+        self.test = self.test[self.test['seq1_length'] < self.thresh].reset_index(drop=True)
+        self.test = self.test[self.test['seq2_length'] < self.thresh].reset_index(drop=True)
+        self.valid = self.valid[self.valid['seq1_length'] < self.thresh].reset_index(drop=True)
+        self.valid = self.valid[self.valid['seq2_length'] < self.thresh].reset_index(drop=True)
 
         if data_split == 'train':
             self.data = self.train
+            # self.data.to_csv('train.csv')
         elif data_split == 'test':
             self.data = self.test
+            # self.data.to_csv('test.csv')
         else:
             self.data = self.valid
+            # self.data.to_csv('valid.csv')
 
     def __getitem__(self, index):
         record = self.data.iloc[index]
         seq1 = self.tokenizer(record['Protein1'],
                               add_special_tokens=True, max_length=self.max_len, return_tensors="pt",
+                              padding="max_length",
                               truncation=False)
         seq2 = self.tokenizer(record['Protein2'],
                               add_special_tokens=True, max_length=self.max_len, return_tensors="pt",
-                              padding="max_length", truncation=False)
-        print(seq1['input_ids'][0].shape)
-        print(seq1['attention_mask'][0].shape)
-        print(seq2['input_ids'][0].shape)
-        print(seq2['attention_mask'][0].shape)
+                              padding="max_length",
+                              truncation=False)
         return {
             'seq1_input_ids': seq1['input_ids'][0],
-            'seq1_attention_mask': seq1['attention_mask'][0],
+            # 'seq1_attention_mask': seq1['attention_mask'][0],
             'seq2_input_ids': seq2['input_ids'][0],
-            'seq2_attention_mask': seq2['attention_mask'][0],
+            # 'seq2_attention_mask': seq2['attention_mask'][0],
             'label': torch.tensor(record['Y'])
         }
 
