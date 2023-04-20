@@ -7,28 +7,39 @@ from rich.progress import track
 log = logging.getLogger(__name__)
 
 
-def train(
+def train_simple_linear_model(
         model: nn.Module,
-        train_dataset,
-        test_dataset,
-        batch_size: int,
+        train_loader,
+        test_loader,
         epochs: int,
         lr: float,
         logging_interval: int = 100,
 ):
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
-    criterion = nn.CrossEntropyLoss()
+    """
+    Train a simple linear model.
+    :param model: model to train
+    :param train_loader: train loader data
+    :param test_loader: test loader data
+    :param batch_size: batch size
+    :param epochs: number of epochs
+    :param lr: learning rate
+    :param logging_interval: number of batches between logging
+    :return:
+    """
+    criterion = nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     avg_loss = 0.0
+    train_acc_store = []
+    val_acc_store = []
 
     for epoch in range(epochs):
         model.train()
-        for batch_idx, (data, target) in track(
+        for batch_idx, batch in track(
                 enumerate(train_loader), total=len(train_loader), description=f"Train epoch {epoch}"
         ):
+            data, target = batch['concatenated_inputs'].float(), batch['label']
+            target = target.unsqueeze(1).float()
             optimizer.zero_grad()
             output = model(data)
             loss = criterion(output, target)
@@ -47,9 +58,11 @@ def train(
         correct = 0
         total = 0
         with torch.no_grad():
-            for batch_idx, (data, target) in track(
+            for batch_idx, batch in track(
                     enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
             ):
+                data, target = batch['concatenated_inputs'].float(), batch['label']
+                target = target.unsqueeze(1).float()
                 output = model(data)
                 _, predicted = torch.max(output.data, 1)
                 total += target.size(0)
