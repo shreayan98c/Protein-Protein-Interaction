@@ -7,7 +7,7 @@ class HuRIDataset(torch.utils.data.Dataset):
     """
     Dataset class for HuRI dataset to be used with PyTorch DataLoader.
     """
-    def __init__(self, tokenizer, small_subset, max_len=5000, data_split='train', thresh=5000, neg_sample=2):
+    def __init__(self, tokenizer, small_subset, max_len=5000, data_split='train', thresh=5000, neg_sample=1):
         """
         Constructor for HuRIDataset class.
         :param tokenizer: tokenizer to use for encoding sequences
@@ -24,9 +24,9 @@ class HuRIDataset(torch.utils.data.Dataset):
         self.data.neg_sample(frac=neg_sample)
         split = self.data.get_split()
 
-        self.train = split["train"]
-        self.valid = split["valid"]
-        self.test = split["test"]
+        self.train = split["train"].sample(frac = 1, random_state = 1)
+        self.valid = split["valid"].sample(frac = 1, random_state = 1)
+        self.test = split["test"].sample(frac = 1, random_state = 1)
 
         # select subset of data if small_subset is True
         if small_subset:

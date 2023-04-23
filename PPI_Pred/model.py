@@ -54,6 +54,13 @@ class SimpleLinearModel(nn.Module):
         self.layers.append(nn.Linear(prev_channels, 1))
         self.layers.append(nn.Sigmoid())
 
+        # weight initialization
+        for m in self.layers:
+            if isinstance(m, nn.Linear):
+                if m.bias is not None:
+                    m.bias.data.zero_()
+                torch.nn.init.xavier_uniform_(m.weight.data)
+
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)
