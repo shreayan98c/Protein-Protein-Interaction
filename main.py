@@ -46,10 +46,14 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
+    #Lightning class wraps pytorch model for easier reproducability.: jacky
     lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
+
+    #Define WandB logger for expeperiment tracking
+    wandb_logger = WandbLogger(project="PPI")
     
-    trainer = pl.Trainer(limit_train_batches=100, max_epochs=1)
-    trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader)
+    trainer = pl.Trainer(limit_train_batches=100, max_epochs=10,logger = wandb_logger)
+    trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
 
 
     # train_simple_linear_model(

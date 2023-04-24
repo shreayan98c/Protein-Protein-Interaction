@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 import logging
 from rich.progress import track
 import lightning.pytorch as pl
+from lightning.pytorch.loggers import WandbLogger
 
 
 log = logging.getLogger(__name__)
@@ -14,6 +15,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     def __init__(self, model):
         super().__init__()
         self.model = model
+    
         self.criterion = nn.BCELoss()
 
     def training_step(self, batch, batch_idx):
@@ -25,8 +27,26 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         loss = self.criterion(output, target)
         # Logging to TensorBoard (if installed) by default
         # log.info("train_loss", loss)
-        print(loss)
+        self.log("train/loss", loss)
         return loss
+
+    def validation_step(self,batch,batch_idx):
+        
+        total = 0
+        correct = 0
+
+        with torch.no_grad():
+            data, target = batch['concatenated_inputs'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+            output = self.model(data)
+            predicted = torch.round(output.data)
+            total += target.size(0)
+            correct += (predicted == target).sum().item()
+            val_loss = self.criterion(output, target)
+            self.log("val_loss", val_loss)
+            self.log("acc",correct/total)
+            
+
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-3)
