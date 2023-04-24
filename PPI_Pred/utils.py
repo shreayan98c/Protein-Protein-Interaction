@@ -19,7 +19,6 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         self.model = model
         self.criterion = nn.BCELoss()
 
-        #save hyperparams to wandb
         self.save_hyperparameters()
 
         #declare metrics to trac
@@ -60,7 +59,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         return {"optimizer":optimizer, "lr_scheduler" : {"scheduler" : sch}}
     
     def test_step(self, batch, batch_idx):
-        
+
         data, target = batch['concatenated_inputs'].float(), batch['label']
         target = target.unsqueeze(1).float()
         output = self.model(data)
@@ -69,6 +68,11 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         self.test_acc(predicted,target)
         self.log("test_loss", test_loss, on_step= False, on_epoch= True)
         self.log("test_acc",self.test_acc, on_step = False, on_epoch  = True)  
+
+def init_weights(m):
+    if isinstance(m, nn.Linear):
+        torch.nn.init.xavier_uniform(m.weight)
+        m.bias.data.fill_(0.01)
 
 
 def train_simple_linear_model(

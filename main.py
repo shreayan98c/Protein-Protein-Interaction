@@ -20,7 +20,7 @@ def cli():
 
 
 @cli.command()
-@click.option("--batch-size", default=5)
+@click.option("--batch-size", default=1)
 @click.option("--epochs", default=10)
 @click.option("--lr", default=1e-3)
 @click.option("--small_subset", default=True)
@@ -48,12 +48,15 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     #Lightning class wraps pytorch model for easier reproducability.: jacky
     lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
+    
+    #init weights:
+    lightning_model_wrapper.apply(init_weights)
 
     #Define WandB logger for expeperiment tracking
-    wandb_logger = WandbLogger(project="PPI",name="Test with metrics")
+    wandb_logger = WandbLogger(project="PPI",name="overfit")
     
     #Define a trainer and fit using it 
-    trainer = pl.Trainer(max_epochs=10,logger = wandb_logger)
+    trainer = pl.Trainer(max_epochs=10000,logger = wandb_logger)
     trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
 
     #test the model 

@@ -33,7 +33,7 @@ class HuRIDataset(torch.utils.data.Dataset):
             # self.train = self.train[:1000]
             # self.valid = self.valid[:1000]
             # self.test = self.test[:1000]
-            self.train = self.train[:10]
+            self.train = self.train[:1]
             self.valid = self.valid[:10]
             self.test = self.test[:10]
 
