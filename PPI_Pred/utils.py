@@ -5,12 +5,14 @@ import logging
 from rich.progress import track
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
+import torchmetrics
 
 
 log = logging.getLogger(__name__)
 
 
-#define a lightnbing Module
+#define a lightnbing Module to wrap around any non-contrastive classifier we want
+#TODO: extend capabilities to contrastive classifiers. 
 class LitNonContrastiveClassifier(pl.LightningModule):
     def __init__(self, model):
         super().__init__()
@@ -19,6 +21,11 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
         #save hyperparams to wandb
         self.save_hyperparameters()
+
+        #declare metrics to trac
+        self.train_acc = torchmetrics.classification.BinaryAccuracy()
+        self.val_acc = torchmetrics.classification.BinaryAccuracy()
+        self.test_acc = torchmetrics.classification.BinaryAccuracy()
         
 
     def training_step(self, batch, batch_idx):
@@ -28,33 +35,31 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         target = target.unsqueeze(1).float()
         output = self.model(data)
         loss = self.criterion(output, target)
-        # Logging to TensorBoard (if installed) by default
-        # log.info("train_loss", loss)
-        self.log("train_loss", loss)
+        predicted = torch.round(output.data)
+        self.train_acc(predicted,target)
+        # Logging to wandb
+        self.log("train_loss", loss, on_step = False, on_epoch= True)
+        self.log("train_acc", self.train_acc,on_step=False,on_epoch=True)
         return loss
 
     def validation_step(self,batch,batch_idx):
         
-        total = 0
-        correct = 0
-
         with torch.no_grad():
             data, target = batch['concatenated_inputs'].float(), batch['label']
             target = target.unsqueeze(1).float()
             output = self.model(data)
-            predicted = torch.round(output.data)
-            total += target.size(0)
-            correct += (predicted == target).sum().item()
             val_loss = self.criterion(output, target)
-            print("hello")
-            self.log("val_loss", val_loss)
-            self.log("acc",correct/total)
+            predicted = torch.round(output.data)
+            self.val_acc(predicted,target)
+            self.log("val_loss", val_loss, on_step= False, on_epoch= True)
+            self.log("valid-acc",self.val_acc, on_step = False, on_epoch  = True)
             
 
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-3)
-        return optimizer
+        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size  = 10 , gamma = 0.9)
+        return {"optimizer":optimizer, "lr_scheduler" : {"scheduler" : sch}}
 
 def train_simple_linear_model(
         model: nn.Module,

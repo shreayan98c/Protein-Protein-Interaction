@@ -20,7 +20,7 @@ def cli():
 
 
 @cli.command()
-@click.option("--batch-size", default=10)
+@click.option("--batch-size", default=5)
 @click.option("--epochs", default=10)
 @click.option("--lr", default=1e-3)
 @click.option("--small_subset", default=True)
@@ -50,7 +50,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
 
     #Define WandB logger for expeperiment tracking
-    wandb_logger = WandbLogger(project="PPI",name="Test")
+    wandb_logger = WandbLogger(project="PPI",name="Test with metrics")
     
     trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)
     trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
