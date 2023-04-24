@@ -69,10 +69,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         self.log("test_loss", test_loss, on_step= False, on_epoch= True)
         self.log("test_acc",self.test_acc, on_step = False, on_epoch  = True)  
 
-def init_weights(m):
-    if isinstance(m, nn.Linear):
-        torch.nn.init.xavier_uniform(m.weight)
-        m.bias.data.fill_(0.01)
+
 
 
 def train_simple_linear_model(
