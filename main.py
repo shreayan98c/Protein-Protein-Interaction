@@ -46,16 +46,20 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
-    model = SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3)
+    lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
+    
+    trainer = pl.Trainer(limit_train_batches=100, max_epochs=1)
+    trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader)
 
-    train_simple_linear_model(
-        model=model,
-        train_loader=train_dataloader,
-        test_loader=test_dataloader,
-        epochs=epochs,
-        lr=lr,
-        logging_interval=log_interval,
-    )
+
+    # train_simple_linear_model(
+    #     model=model,
+    #     train_loader=train_dataloader,
+    #     test_loader=test_dataloader,
+    #     epochs=epochs,
+    #     lr=lr,
+    #     logging_interval=log_interval,
+    # )
 
 
 if __name__ == "__main__":

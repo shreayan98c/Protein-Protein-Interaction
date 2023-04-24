@@ -1,11 +1,36 @@
 import torch
-from torch import nn
+from torch import nn,optim,utils
 from torch.utils.data import DataLoader
 import logging
 from rich.progress import track
+import lightning.pytorch as pl
+
 
 log = logging.getLogger(__name__)
 
+
+#define a lightnbing Module
+class LitNonContrastiveClassifier(pl.LightningModule):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.criterion = nn.BCELoss()
+
+    def training_step(self, batch, batch_idx):
+        # training_step defines the train loop.
+        # it is independent of forward
+        data, target = batch['concatenated_inputs'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output = self.model(data)
+        loss = self.criterion(output, target)
+        # Logging to TensorBoard (if installed) by default
+        # log.info("train_loss", loss)
+        print(loss)
+        return loss
+
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        return optimizer
 
 def train_simple_linear_model(
         model: nn.Module,
