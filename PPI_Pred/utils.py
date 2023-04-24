@@ -42,8 +42,6 @@ def train_simple_linear_model(
             target = target.unsqueeze(1).float()
             optimizer.zero_grad()
             output = model(data)
-            # print(f"output class: {output}")
-            # print(f"target class {target}")
             loss = criterion(output, target)
             avg_loss += loss.item()
             loss.backward()
@@ -66,10 +64,7 @@ def train_simple_linear_model(
                 data, target = batch['concatenated_inputs'].float(), batch['label']
                 target = target.unsqueeze(1).float()
                 output = model(data)
-                print(f"output class: {output}")
-                print(f"target class {target}")
                 predicted = torch.round(output.data)
-                # print(f"predicted class: {predicted}")
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
 
