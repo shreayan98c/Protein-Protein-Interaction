@@ -30,9 +30,12 @@ class HuRIDataset(torch.utils.data.Dataset):
 
         # select subset of data if small_subset is True
         if small_subset:
-            self.train = self.train[:1000]
-            self.valid = self.valid[:1000]
-            self.test = self.test[:1000]
+            # self.train = self.train[:1000]
+            # self.valid = self.valid[:1000]
+            # self.test = self.test[:1000]
+            self.train = self.train[:10]
+            self.valid = self.valid[:10]
+            self.test = self.test[:10]
 
         # find length of each sequence
         self.train['seq1_length'] = self.train['Protein1'].str.len()

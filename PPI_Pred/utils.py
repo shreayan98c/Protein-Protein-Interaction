@@ -15,8 +15,11 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     def __init__(self, model):
         super().__init__()
         self.model = model
-    
         self.criterion = nn.BCELoss()
+
+        #save hyperparams to wandb
+        self.save_hyperparameters()
+        
 
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
@@ -27,7 +30,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         loss = self.criterion(output, target)
         # Logging to TensorBoard (if installed) by default
         # log.info("train_loss", loss)
-        self.log("train/loss", loss)
+        self.log("train_loss", loss)
         return loss
 
     def validation_step(self,batch,batch_idx):
@@ -43,6 +46,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
             total += target.size(0)
             correct += (predicted == target).sum().item()
             val_loss = self.criterion(output, target)
+            print("hello")
             self.log("val_loss", val_loss)
             self.log("acc",correct/total)
             
