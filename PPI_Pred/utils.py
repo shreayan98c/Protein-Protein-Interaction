@@ -52,14 +52,24 @@ class LitNonContrastiveClassifier(pl.LightningModule):
             predicted = torch.round(output.data)
             self.val_acc(predicted,target)
             self.log("val_loss", val_loss, on_step= False, on_epoch= True)
-            self.log("valid-acc",self.val_acc, on_step = False, on_epoch  = True)
-            
-
+            self.log("valid_acc",self.val_acc, on_step = False, on_epoch  = True)       
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-3)
         sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size  = 10 , gamma = 0.9)
         return {"optimizer":optimizer, "lr_scheduler" : {"scheduler" : sch}}
+    
+    def test_step(self, batch, batch_idx):
+        
+        data, target = batch['concatenated_inputs'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output = self.model(data)
+        test_loss = self.criterion(output, target)
+        predicted = torch.round(output.data)
+        self.test_acc(predicted,target)
+        self.log("test_loss", test_loss, on_step= False, on_epoch= True)
+        self.log("test_acc",self.test_acc, on_step = False, on_epoch  = True)  
+
 
 def train_simple_linear_model(
         model: nn.Module,

@@ -52,8 +52,12 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #Define WandB logger for expeperiment tracking
     wandb_logger = WandbLogger(project="PPI",name="Test with metrics")
     
-    trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)
+    #Define a trainer and fit using it 
+    trainer = pl.Trainer(max_epochs=10,logger = wandb_logger)
     trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
+
+    #test the model 
+    trainer.test(model = lightning_model_wrapper, dataloaders=test_dataloader)
 
 
     # train_simple_linear_model(
