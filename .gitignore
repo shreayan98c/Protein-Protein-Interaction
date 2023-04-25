@@ -28,6 +28,7 @@ share/python-wheels/
 MANIFEST
 wandb/*
 lightning_logs/*
+model.pt
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
