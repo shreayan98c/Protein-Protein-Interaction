@@ -65,3 +65,51 @@ class SimpleLinearModel(nn.Module):
         for layer in self.layers:
             x = layer(x)
         return x
+
+
+class SiameseNetwork(nn.Module):
+    def __init__(self, d: int = 10000):
+        super(SiameseNetwork, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels=d, out_channels=32, kernel_size=3)
+        self.batchnorm1 = nn.BatchNorm1d(32)
+        self.relu1 = nn.ReLU()
+        self.pool1 = nn.MaxPool1d(kernel_size=2)
+        self.conv2 = nn.Conv1d(in_channels=32, out_channels=64, kernel_size=3)
+        self.batchnorm2 = nn.BatchNorm1d(64)
+        self.relu2 = nn.ReLU()
+        self.pool2 = nn.MaxPool1d(kernel_size=2)
+        self.conv3 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=3)
+        self.batchnorm3 = nn.BatchNorm1d(128)
+        self.relu3 = nn.ReLU()
+        self.pool3 = nn.MaxPool1d(kernel_size=2)
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Linear(128 * 9, 512)
+        self.relu4 = nn.ReLU()
+        self.fc2 = nn.Linear(512, 1)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward_once(self, x):
+        x = self.conv1(x)
+        x = self.batchnorm1(x)
+        x = self.relu1(x)
+        x = self.pool1(x)
+        x = self.conv2(x)
+        x = self.batchnorm2(x)
+        x = self.relu2(x)
+        x = self.pool2(x)
+        x = self.conv3(x)
+        x = self.batchnorm3(x)
+        x = self.relu3(x)
+        x = self.pool3(x)
+        x = self.flatten(x)
+        x = self.fc1(x)
+        x = self.relu4(x)
+        return x
+
+    def forward(self, input1, input2):
+        output1 = self.forward_once(input1)
+        output2 = self.forward_once(input2)
+        concatenated = torch.cat((output1, output2), 1)
+        x = self.fc2(concatenated)
+        x = self.sigmoid(x)
+        return x
