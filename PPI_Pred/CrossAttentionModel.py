@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class SimpleLinearModel(nn.Module):
+class CrossAttentionModel(nn.Module):
     def __init__(self, hidden_layers: list = None, dropout: float = 0.3):
         super().__init__()
 
