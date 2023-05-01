@@ -6,7 +6,7 @@ class CrossAttentionModel(nn.Module):
     def __init__(self, d: int 1):
         super().__init__()
 
-        # blocks of convolutional layers followed by batch normalization, relu, and max pooling
+        # Block to pass input 1 through before passing to cross attention layer
         block_input1 = nn.Sequential(
             nn.Conv1d(in_channels=d, out_channels=16, kernel_size=3, padding=1),
             nn.BatchNorm1d(num_features=16),
