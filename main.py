@@ -3,7 +3,7 @@ import logging
 import transformers
 from PPI_Pred.utils import *
 from PPI_Pred.dataset import HuRIDataset
-from PPI_Pred.model import SimpleLinearModel
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
 from rich.logging import RichHandler
 from transformers import EsmTokenizer
 from torch.utils.data import DataLoader
@@ -20,9 +20,9 @@ def cli():
 
 
 @cli.command()
-@click.option("--batch-size", default=32)
-@click.option("--epochs", default=10)
-@click.option("--lr", default=1e-3)
+@click.option("--batch-size", default=64)
+@click.option("--epochs", default=20)
+@click.option("--lr", default=1e-4)
 @click.option("--small_subset", default=True)
 @click.option("--levels", default=3)
 @click.option("--log-interval", default=100, help="Number of batches between logging")
@@ -48,7 +48,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     #Lightning class wraps pytorch model for easier reproducability.: jacky
     lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
-    
+    # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
     #Define WandB logger for expeperiment tracking
     wandb_logger = WandbLogger(project="PPI",name="overfit")
@@ -57,11 +57,21 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)
     trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
 
-    #test the model 
+    #test the model
     trainer.test(model = lightning_model_wrapper, dataloaders=test_dataloader)
 
+    # model = SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.5)
+    # model = SiameseNetwork(d=1)
 
     # train_simple_linear_model(
+    #     model=model,
+    #     train_loader=train_dataloader,
+    #     test_loader=test_dataloader,
+    #     epochs=epochs,
+    #     lr=lr,
+    #     logging_interval=log_interval,
+    # )
+    # train_siamese_model(
     #     model=model,
     #     train_loader=train_dataloader,
     #     test_loader=test_dataloader,
