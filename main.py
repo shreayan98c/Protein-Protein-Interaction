@@ -36,7 +36,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: levels: Number of levels in the model
     :args: log_interval: Number of batches between logging
     """
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t36_3B_UR50D")  # esm2_t36_3B_UR50D()
+    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t48_15B_UR50D")  # esm2_t36_3B_UR50D()
 
     train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train', small_subset=small_subset)
     test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test', small_subset=small_subset)
