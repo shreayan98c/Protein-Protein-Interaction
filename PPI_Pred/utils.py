@@ -6,6 +6,7 @@ from rich.progress import track
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
 import torchmetrics
+from PPI_Pred.losses import ContrastiveLoss
 
 
 log = logging.getLogger(__name__)
@@ -154,7 +155,7 @@ def train_siamese_model(
     :param logging_interval: number of batches between logging
     :return:
     """
-    criterion = nn.BCELoss()
+    criterion = ContrastiveLoss(margin=1.)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     avg_loss = 0.0
@@ -169,9 +170,9 @@ def train_siamese_model(
             seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
             target = target.unsqueeze(1).float()
             optimizer.zero_grad()
-            output = model(seq1, seq2)
-            loss = criterion(output, target)
-            avg_loss += loss.item()
+            output1, output2 = model(seq1, seq2)
+            loss = criterion(output1, output2, target, size_average=False)
+            avg_loss += loss.mean().item()
             loss.backward()
             optimizer.step()
 
@@ -191,8 +192,12 @@ def train_siamese_model(
             ):
                 seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
                 target = target.unsqueeze(1).float()
-                output = model(seq1, seq2)
-                predicted = torch.round(output.data)
+                output1, output2 = model(seq1, seq2)
+                loss = criterion(output1, output2, target, size_average=False)
+                # print(loss, target)
+
+                # TODO figure out how to calculate the pred from contrastive loss
+                predicted = loss > 0.5
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
 
