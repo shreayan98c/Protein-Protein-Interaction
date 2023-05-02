@@ -15,14 +15,14 @@ class CrossAttentionBlock(nn.Module):
 
         # Block to pass input 1 through before passing to cross attention layer
         self.query = nn.Linear(embed_dim, kqv_dims)
-        self.key = nn.Linear(in_features, kqv_dims)
-        self.value = nn.Linear(in_features, kqv_dims)
+        self.key = nn.Linear(embed_dim, kqv_dims)
+        self.value = nn.Linear(embed_dim, kqv_dims)
         self.MultiheadedAttention = nn.MultiheadAttention(kqv_dims, num_heads)
 
 
     def forward(self, input1, input2):
         ### calculate k,q,v
-        q = self.query()
+        q = self.query(input1)
         k = self.key()
         v = self.value()
 
