@@ -7,7 +7,7 @@ class HuRIDataset(torch.utils.data.Dataset):
     """
     Dataset class for HuRI dataset to be used with PyTorch DataLoader.
     """
-    def __init__(self, tokenizer, small_subset, max_len=5000, data_split='train', thresh=5000, neg_sample=1):
+    def __init__(self, tokenizer, small_subset, max_len=500, data_split='train', thresh=500, neg_sample=1):
         """
         Constructor for HuRIDataset class.
         :param tokenizer: tokenizer to use for encoding sequences
@@ -24,9 +24,9 @@ class HuRIDataset(torch.utils.data.Dataset):
         self.data.neg_sample(frac=neg_sample)
         split = self.data.get_split()
 
-        self.train = split["train"].sample(frac = 1, random_state = 1)
-        self.valid = split["valid"].sample(frac = 1, random_state = 1)
-        self.test = split["test"].sample(frac = 1, random_state = 1)
+        self.train = split["train"].sample(frac=1, random_state=1)
+        self.valid = split["valid"].sample(frac=1, random_state=1)
+        self.test = split["test"].sample(frac=1, random_state=1)
 
         # select subset of data if small_subset is True
         if small_subset:
@@ -74,18 +74,18 @@ class HuRIDataset(torch.utils.data.Dataset):
         # encode sequences
         seq1 = self.tokenizer(record['Protein1'],
                               add_special_tokens=True, max_length=self.max_len, return_tensors="pt",
-                              padding="max_length", truncation=False)
+                              padding="max_length", truncation=True)
         seq2 = self.tokenizer(record['Protein2'],
                               add_special_tokens=True, max_length=self.max_len, return_tensors="pt",
-                              padding="max_length", truncation=False)
+                              padding="max_length", truncation=True)
 
         return {
-            'seq1_input_ids': seq1['input_ids'][0],
-            'seq1_attention_mask': seq1['attention_mask'][0],
-            'seq2_input_ids': seq2['input_ids'][0],
-            'seq2_attention_mask': seq2['attention_mask'][0],
-            'concatenated_inputs': torch.cat((seq1['input_ids'][0], seq2['input_ids'][0]), dim=0),
-            'diff_inputs': seq1['input_ids'][0] - seq2['input_ids'][0],
+            'seq1_input_ids': seq1['input_ids'],
+            'seq1_attention_mask': seq1['attention_mask'],
+            'seq2_input_ids': seq2['input_ids'],
+            'seq2_attention_mask': seq2['attention_mask'],
+            'concatenated_inputs': torch.cat((seq1['input_ids'], seq2['input_ids']), dim=1),
+            'diff_inputs': torch.abs(seq1['input_ids'] - seq2['input_ids']),
             'label': torch.tensor(record['Y'])
         }
 
