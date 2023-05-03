@@ -1,19 +1,19 @@
 import torch
-from torch import nn,optim,utils
+import torchmetrics
+from torch import nn, optim, utils
+from torch.nn import BCELoss
 from torch.utils.data import DataLoader
 import logging
 from rich.progress import track
+from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
-import torchmetrics
-from PPI_Pred.losses import ContrastiveLoss
-
 
 log = logging.getLogger(__name__)
 
 
-#define a lightnbing Module to wrap around any non-contrastive classifier we want
-#TODO: extend capabilities to contrastive classifiers. 
+# define a lightning Module to wrap around any non-contrastive classifier we want
+# TODO: extend capabilities to contrastive classifiers.
 class LitNonContrastiveClassifier(pl.LightningModule):
     def __init__(self, model):
         super().__init__()
@@ -22,11 +22,10 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
         self.save_hyperparameters()
 
-        #declare metrics to trac
+        # declare metrics to track
         self.train_acc = torchmetrics.classification.BinaryAccuracy()
         self.val_acc = torchmetrics.classification.BinaryAccuracy()
         self.test_acc = torchmetrics.classification.BinaryAccuracy()
-        
 
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
@@ -36,41 +35,37 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         output = self.model(data)
         loss = self.criterion(output, target)
         predicted = torch.round(output.data)
-        self.train_acc(predicted,target)
+        self.train_acc(predicted, target)
         # Logging to wandb
-        self.log("train_loss", loss, on_step = False, on_epoch= True)
-        self.log("train_acc", self.train_acc,on_step=False,on_epoch=True)
+        self.log("train_loss", loss, on_step=False, on_epoch=True)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
         return loss
 
-    def validation_step(self,batch,batch_idx):
-        
+    def validation_step(self, batch, batch_idx):
         with torch.no_grad():
             data, target = batch['concatenated_inputs'].float(), batch['label']
             target = target.unsqueeze(1).float()
             output = self.model(data)
             val_loss = self.criterion(output, target)
             predicted = torch.round(output.data)
-            self.val_acc(predicted,target)
-            self.log("val_loss", val_loss, on_step= False, on_epoch= True)
-            self.log("valid_acc",self.val_acc, on_step = False, on_epoch  = True)       
+            self.val_acc(predicted, target)
+            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+            self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-3)
-        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size  = 10 , gamma = 0.9)
-        return {"optimizer":optimizer, "lr_scheduler" : {"scheduler" : sch}}
-    
-    def test_step(self, batch, batch_idx):
+        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": sch}}
 
+    def test_step(self, batch, batch_idx):
         data, target = batch['concatenated_inputs'].float(), batch['label']
         target = target.unsqueeze(1).float()
         output = self.model(data)
         test_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
-        self.test_acc(predicted,target)
-        self.log("test_loss", test_loss, on_step= False, on_epoch= True)
-        self.log("test_acc",self.test_acc, on_step = False, on_epoch  = True)  
-
-
+        self.test_acc(predicted, target)
+        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
 
 
 def train_simple_linear_model(
@@ -86,7 +81,6 @@ def train_simple_linear_model(
     :param model: model to train
     :param train_loader: train loader data
     :param test_loader: test loader data
-    :param batch_size: batch size
     :param epochs: number of epochs
     :param lr: learning rate
     :param logging_interval: number of batches between logging
@@ -155,7 +149,8 @@ def train_siamese_model(
     :param logging_interval: number of batches between logging
     :return:
     """
-    criterion = ContrastiveLoss(margin=1.)
+    # criterion = ContrastiveLoss(margin=1.)
+    criterion = BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     avg_loss = 0.0
@@ -167,11 +162,16 @@ def train_siamese_model(
         for batch_idx, batch in track(
                 enumerate(train_loader), total=len(train_loader), description=f"Train epoch {epoch}"
         ):
-            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
+            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
             target = target.unsqueeze(1).float()
             optimizer.zero_grad()
-            output1, output2 = model(seq1, seq2)
-            loss = criterion(output1, output2, target, size_average=False)
+
+            # # if using contrastive loss
+            # output1, output2 = model(seq1, seq2)
+            # loss = criterion(output1, output2, target, size_average=False)
+
+            output = model(seq1, seq2)
+            loss = criterion(output, target)
             avg_loss += loss.mean().item()
             loss.backward()
             optimizer.step()
@@ -190,14 +190,16 @@ def train_siamese_model(
             for batch_idx, batch in track(
                     enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
             ):
-                seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
+                seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
                 target = target.unsqueeze(1).float()
-                output1, output2 = model(seq1, seq2)
-                loss = criterion(output1, output2, target, size_average=False)
-                # print(loss, target)
 
-                # TODO figure out how to calculate the pred from contrastive loss
-                predicted = loss > 0.5
+                # # if using contrastive loss
+                # output1, output2 = model(seq1, seq2)
+                # loss = criterion(output1, output2, target, size_average=False)
+                # predicted = loss > 0.5
+
+                output = model(seq1, seq2)
+                predicted = torch.round(output.data)
                 total += target.size(0)
                 correct += (predicted == target).sum().item()
 
