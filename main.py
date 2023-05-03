@@ -56,7 +56,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     wandb_logger = WandbLogger(project="PPI", name="overfit")
 
     # Define a trainer and fit using it
-    trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
+    trainer = pl.Trainer(max_epochs=100, logger=wandb_logger)
     trainer.fit(model=lightning_model_wrapper,
                 train_dataloaders=train_dataloader,
                 val_dataloaders=validation_dataloader)

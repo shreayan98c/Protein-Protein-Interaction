@@ -8,6 +8,7 @@ from rich.progress import track
 from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
 
 log = logging.getLogger(__name__)
 
@@ -30,42 +31,95 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
         # it is independent of forward
-        data, target = batch['concatenated_inputs'].float(), batch['label']
-        target = target.unsqueeze(1).float()
-        output = self.model(data)
-        loss = self.criterion(output, target)
-        predicted = torch.round(output.data)
-        self.train_acc(predicted, target)
-        # Logging to wandb
-        self.log("train_loss", loss, on_step=False, on_epoch=True)
-        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
-        return loss
 
-    def validation_step(self, batch, batch_idx):
-        with torch.no_grad():
+        if isinstance(self.model, SimpleLinearModel):
             data, target = batch['concatenated_inputs'].float(), batch['label']
             target = target.unsqueeze(1).float()
             output = self.model(data)
-            val_loss = self.criterion(output, target)
+            loss = self.criterion(output, target)
             predicted = torch.round(output.data)
-            self.val_acc(predicted, target)
-            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
-            self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+            self.train_acc(predicted, target)
+            # Logging to wandb
+            self.log("train_loss", loss, on_step=False, on_epoch=True)
+            self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
+            return loss
+
+        elif isinstance(self.model, SiameseNetwork):
+            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+
+            # # if using contrastive loss
+            # output1, output2 = model(seq1, seq2)
+            # loss = criterion(output1, output2, target, size_average=False)
+
+            output = self.model(seq1, seq2)
+            loss = self.criterion(output, target)
+            predicted = torch.round(output.data)
+            self.train_acc(predicted, target)
+            # Logging to wandb
+            self.log("train_loss", loss, on_step=False, on_epoch=True)
+            self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
+            return loss
+
+    def validation_step(self, batch, batch_idx):
+        with torch.no_grad():
+            if isinstance(self.model, SimpleLinearModel):
+                data, target = batch['concatenated_inputs'].float(), batch['label']
+                target = target.unsqueeze(1).float()
+                output = self.model(data)
+                val_loss = self.criterion(output, target)
+                predicted = torch.round(output.data)
+                self.val_acc(predicted, target)
+                self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+                self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+            elif isinstance(self.model, SiameseNetwork):
+                seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+                target = target.unsqueeze(1).float()
+
+                # # if using contrastive loss
+                # output1, output2 = model(seq1, seq2)
+                # loss = criterion(output1, output2, target, size_average=False)
+                # predicted = loss > 0.5
+
+                output = self.model(seq1, seq2)
+                val_loss = self.criterion(output, target)
+                predicted = torch.round(output.data)
+                self.val_acc(predicted, target)
+                self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+                self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
-        optimizer = optim.Adam(self.parameters(), lr=1e-3)
+        optimizer = optim.Adam(self.parameters(), lr=1e-4)
         sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
         return {"optimizer": optimizer, "lr_scheduler": {"scheduler": sch}}
 
     def test_step(self, batch, batch_idx):
-        data, target = batch['concatenated_inputs'].float(), batch['label']
-        target = target.unsqueeze(1).float()
-        output = self.model(data)
-        test_loss = self.criterion(output, target)
-        predicted = torch.round(output.data)
-        self.test_acc(predicted, target)
-        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
-        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
+
+        if isinstance(self.model, SimpleLinearModel):
+            data, target = batch['concatenated_inputs'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+            output = self.model(data)
+            test_loss = self.criterion(output, target)
+            predicted = torch.round(output.data)
+            self.test_acc(predicted, target)
+            self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+            self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
+
+        elif isinstance(self.model, SiameseNetwork):
+            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+
+            # # if using contrastive loss
+            # output1, output2 = model(seq1, seq2)
+            # loss = criterion(output1, output2, target, size_average=False)
+            # predicted = loss > 0.5
+
+            output = self.model(seq1, seq2)
+            test_loss = self.criterion(output, target)
+            predicted = torch.round(output.data)
+            self.test_acc(predicted, target)
+            self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+            self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
 
 
 def train_simple_linear_model(
