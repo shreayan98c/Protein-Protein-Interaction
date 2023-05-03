@@ -36,14 +36,14 @@ class MyModel(nn.Module):
 
 
 class SimpleLinearModel(nn.Module):
-    def __init__(self, hidden_layers: list = None, dropout: float = 0.3):
+    def __init__(self, max_len, hidden_layers: list = None, dropout: float = 0.3):
         super().__init__()
 
         if hidden_layers is None:
             hidden_layers = [50, 25, 3, 1]
         self.layers = nn.ModuleList()
 
-        prev_channels = 10000
+        prev_channels = 2 * max_len
         for i, l in enumerate(hidden_layers[:-1]):
             self.layers.append(nn.Linear(prev_channels, l))
             self.layers.append(nn.ReLU())
@@ -63,6 +63,7 @@ class SimpleLinearModel(nn.Module):
     def forward(self, x):
         for layer in self.layers:
             x = layer(x)
+        x = x.squeeze(1)
         return x
 
 

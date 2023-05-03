@@ -48,7 +48,8 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
     # Lightning class wraps pytorch model for easier reproducibility.: jacky
-    lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.3))
+    lightning_model_wrapper = LitNonContrastiveClassifier(SimpleLinearModel(max_len=MAX_LEN,
+                                                                            hidden_layers=[50, 25, 3, 1], dropout=0.3))
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
     # Define WandB logger for experiment tracking
@@ -63,7 +64,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
-    # model = SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.5)
+    # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
     # model = SiameseNetwork(d=1)
 
     # train_simple_linear_model(
