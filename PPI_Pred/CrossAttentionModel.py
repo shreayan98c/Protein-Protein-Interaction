@@ -34,6 +34,7 @@ class CrossAttentionBlock(nn.Module):
         self.MultiheadedAttention = nn.MultiheadAttention(embed_dim,num_heads, bias,add_bias_kv,add_zero_attn,kdim,vdim,batch_first,device,dtype)
         self.l_norm = nn.LayerNorm(embed_dim)
 
+        #query, key, value calculations
         self.q_w = nn.Linear(embed_dim, embed_dim)
         self.k_w = nn.Linear(embed_dim, embed_dim)
         self.v_w = nn.Linear(embed_dim, embed_dim)

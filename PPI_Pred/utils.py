@@ -15,11 +15,11 @@ log = logging.getLogger(__name__)
 #define a lightnbing Module to wrap around any non-contrastive classifier we want
 #TODO: extend capabilities to contrastive classifiers. 
 class LitNonContrastiveClassifier(pl.LightningModule):
-    def __init__(self, model):
+    def __init__(self, model,split = True):
         super().__init__()
         self.model = model
         self.criterion = nn.BCELoss()
-
+        self.split = split # determines if the two sequences should be split on input 
         self.save_hyperparameters()
 
         #declare metrics to trac
@@ -31,9 +31,12 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
         # it is independent of forward
-        data, target = batch['concatenated_inputs'].float(), batch['label']
+
+
+        seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
+        output = self.model(seq1,seq2)
+
         target = target.unsqueeze(1).float()
-        output = self.model(data)
         loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.train_acc(predicted,target)
@@ -45,9 +48,9 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     def validation_step(self,batch,batch_idx):
         
         with torch.no_grad():
-            data, target = batch['concatenated_inputs'].float(), batch['label']
+            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
+            output = self.model(seq1,seq2)
             target = target.unsqueeze(1).float()
-            output = self.model(data)
             val_loss = self.criterion(output, target)
             predicted = torch.round(output.data)
             self.val_acc(predicted,target)
@@ -61,9 +64,10 @@ class LitNonContrastiveClassifier(pl.LightningModule):
     
     def test_step(self, batch, batch_idx):
 
-        data, target = batch['concatenated_inputs'].float(), batch['label']
+        seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
+        output = self.model(seq1,seq2)
         target = target.unsqueeze(1).float()
-        output = self.model(data)
+  
         test_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.test_acc(predicted,target)
