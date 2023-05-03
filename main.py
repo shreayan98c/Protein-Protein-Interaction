@@ -48,6 +48,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
+
     #Lightning class wraps pytorch model for easier reproducability.: jacky
     simple_cross_attention_block = CrossAttentionBlock(embed_dim = 50,num_heads = 5,ff_dim = 20)
     lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
