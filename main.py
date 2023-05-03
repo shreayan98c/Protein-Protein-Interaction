@@ -22,7 +22,7 @@ def cli():
 
 @cli.command()
 @click.option("--batch-size", default=64)
-@click.option("--epochs", default=20)
+@click.option("--epochs", default=50)
 @click.option("--lr", default=1e-4)
 @click.option("--small_subset", default=True)
 @click.option("--levels", default=3)
@@ -37,11 +37,12 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: levels: Number of levels in the model
     :args: log_interval: Number of batches between logging
     """
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t36_3B_UR50D")  # esm2_t36_3B_UR50D()
+    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t48_15B_UR50D")  # esm2_t36_3B_UR50D()
+    MAX_LEN = 500
 
-    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train', small_subset=small_subset)
-    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test', small_subset=small_subset)
-    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid', small_subset=small_subset)
+    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train', small_subset=small_subset, max_len=MAX_LEN)
+    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test', small_subset=small_subset, max_len=MAX_LEN)
+    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid', small_subset=small_subset, max_len=MAX_LEN)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
@@ -59,10 +60,16 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)
     trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
 
-    #test the model
-    trainer.test(model = lightning_model_wrapper, dataloaders=test_dataloader)
+    # Define a trainer and fit using it
+    trainer = pl.Trainer(max_epochs=100, logger=wandb_logger)
+    trainer.fit(model=lightning_model_wrapper,
+                train_dataloaders=train_dataloader,
+                val_dataloaders=validation_dataloader)
 
-    # model = SimpleLinearModel(hidden_layers=[50, 25, 3, 1], dropout=0.5)
+    # test the model
+    trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
+
+    # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
     # model = SiameseNetwork(d=1)
 
     # train_simple_linear_model(
