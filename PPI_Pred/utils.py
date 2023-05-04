@@ -202,8 +202,8 @@ def train_siamese_model(
     :param logging_interval: number of batches between logging
     :return:
     """
-    # criterion = ContrastiveLoss(margin=1.)
-    criterion = BCELoss()
+    criterion_cl = ContrastiveLoss(margin=1.)
+    criterion_bce = BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     avg_loss = 0.0
@@ -223,8 +223,10 @@ def train_siamese_model(
             # output1, output2 = model(seq1, seq2)
             # loss = criterion(output1, output2, target, size_average=False)
 
-            output = model(seq1, seq2)
-            loss = criterion(output, target)
+            output1, output2, output = model(seq1, seq2)
+            cl_loss = criterion_cl(output1, output2, target, size_average=True)
+            bce_loss = criterion_bce(output, target)
+            loss = cl_loss + bce_loss
             avg_loss += loss.mean().item()
             loss.backward()
             optimizer.step()
@@ -251,7 +253,11 @@ def train_siamese_model(
                 # loss = criterion(output1, output2, target, size_average=False)
                 # predicted = loss > 0.5
 
-                output = model(seq1, seq2)
+                output1, output2, output = model(seq1, seq2)
+                # cl_loss = criterion_cl(output1, output2, target, size_average=True)
+                # bce_loss = criterion_bce(output, target)
+                # loss = cl_loss + bce_loss
+
                 predicted = torch.round(output.data)
                 total += target.size(0)
                 correct += (predicted == target).sum().item()

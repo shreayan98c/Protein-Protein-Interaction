@@ -150,4 +150,4 @@ class SiameseNetwork(nn.Module):
         diff = torch.abs(output1 - output2)
         output = self.sigmoid(self.fc3(diff))
 
-        return output
+        return output1, output2, output
