@@ -31,7 +31,7 @@ class CrossAttentionBlock(nn.Module):
         super().__init__()
 
         # Block to pass input 1 through before passing to cross attention layer
-        self.MultiheadedAttention = nn.MultiheadAttention(embed_dim,num_heads, bias,add_bias_kv,add_zero_attn,kdim,vdim,batch_first,device,dtype)
+        self.MultiheadedAttention = nn.MultiheadAttention(embed_dim,num_heads)
         self.l_norm = nn.LayerNorm(embed_dim)
 
         #query, key, value calculations
@@ -42,23 +42,30 @@ class CrossAttentionBlock(nn.Module):
         # feed forward neural net
         self.ff = PositionwiseFeedForward(embed_dim, ff_dim)
 
+        self.out = nn.Linear(embed_dim, 1)
+        self.sigmoid = nn.Sigmoid()
+
 
     def forward(self, input1, input2):
+        
+        # Take out channel dimension
+        input1 = torch.squeeze(input1)
+        input2 = torch.squeeze(input2)
 
         ### calculate query key value
         query = self.q_w(input1)
-        key = self.q_w(input2)
-        value = self.q_w(value)
-
+        key = self.k_w(input2)
+        value = self.v_w(input2)
 
         ### calculate attention out + residual connection and layer norm
-        attn_out = self.MultiheadedAttention(query,key,value)
+        attn_out = self.MultiheadedAttention(query,key,value)[0]
         attn_out = self.l_norm(input1 + attn_out)
 
         ### FF net followed by add and layer norm
         ff_out = self.ff(attn_out)
         ff_out = self.l_norm(ff_out + attn_out)
-        return ff_out
+
+        return self.sigmoid(self.out(ff_out))
 
 
 

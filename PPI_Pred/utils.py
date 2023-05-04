@@ -32,10 +32,15 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         # training_step defines the train loop.
         # it is independent of forward
 
-
-        seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
-        output = self.model(seq1,seq2)
-
+        output = None
+        if self.split:
+            seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
+            output = self.model(seq1,seq2)
+        else:
+            data = batch['concatenated_inputs'].float()
+            output = self.model(data)
+        
+        target = batch['label']
         target = target.unsqueeze(1).float()
         loss = self.criterion(output, target)
         predicted = torch.round(output.data)
@@ -78,30 +83,22 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         with torch.no_grad():
-            if isinstance(self.model, SimpleLinearModel):
-                data, target = batch['concatenated_inputs'].float(), batch['label']
-                target = target.unsqueeze(1).float()
-                output = self.model(data)
-                val_loss = self.criterion(output, target)
-                predicted = torch.round(output.data)
-                self.val_acc(predicted, target)
-                self.log("val_loss", val_loss, on_step=False, on_epoch=True)
-                self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+            output = None
+            if self.split:
+                seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
+                output = self.model(seq1,seq2)
             else:
-                seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
-                target = target.unsqueeze(1).float()
+                data = batch['concatenated_inputs'].float()
+                output = self.model(data)
 
-                # # if using contrastive loss
-                # output1, output2 = model(seq1, seq2)
-                # loss = criterion(output1, output2, target, size_average=False)
-                # predicted = loss > 0.5
+            target = batch['label']
+            target = target.unsqueeze(1).float()
 
-                output = self.model(seq1, seq2)
-                val_loss = self.criterion(output, target)
-                predicted = torch.round(output.data)
-                self.val_acc(predicted, target)
-                self.log("val_loss", val_loss, on_step=False, on_epoch=True)
-                self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+            val_loss = self.criterion(output, target)
+            predicted = torch.round(output.data)
+            self.val_acc(predicted, target)
+            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+            self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-4)
@@ -110,8 +107,15 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
 
-        seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
-        output = self.model(seq1,seq2)
+        output = None
+        if self.split:
+            seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
+            output = self.model(seq1,seq2)
+        else:
+            data = batch['concatenated_inputs'].float()
+            output = self.model(data)
+        
+        target = batch['label']
         target = target.unsqueeze(1).float()
   
         test_loss = self.criterion(output, target)

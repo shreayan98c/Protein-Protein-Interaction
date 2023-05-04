@@ -50,7 +50,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
 
     #Lightning class wraps pytorch model for easier reproducability.: jacky
-    simple_cross_attention_block = CrossAttentionBlock(embed_dim = 50,num_heads = 5,ff_dim = 20)
+    simple_cross_attention_block = CrossAttentionBlock(embed_dim = 500,num_heads = 5,ff_dim = 20)
     lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
