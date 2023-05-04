@@ -5,6 +5,7 @@ from PPI_Pred.utils import *
 from PPI_Pred.dataset import HuRIDataset
 from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
 from PPI_Pred.CrossAttentionModel import *
+from PPI_Pred.self_attention import *
 from rich.logging import RichHandler
 from transformers import EsmTokenizer
 from torch.utils.data import DataLoader
@@ -51,11 +52,12 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     #Lightning class wraps pytorch model for easier reproducability.: jacky
     simple_cross_attention_block = CrossAttentionBlock(embed_dim = 500,num_heads = 5,ff_dim = 20)
-    lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
+    simple_self_attention_block = SelfAttentionBlock(embed_dim = 500,num_heads = 5,ff_dim = 20)
+    lightning_model_wrapper = LitNonContrastiveClassifier(simple_self_attention_block)
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
     #Define WandB logger for expeperiment tracking
-    wandb_logger = WandbLogger(project="PPI",name="cross_attention_run")
+    wandb_logger = WandbLogger(project="PPI",name="self_attention_run")
     
     #Define a trainer and fit using it 
     trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)

@@ -52,21 +52,16 @@ class SDP_Attention(nn.Module):
         return torch.matmul(attn, self.value), attn
 
 
-class Self_Attention_Block(nn.Module):
+class SelfAttentionBlock(nn.Module):
     """
     Self-Attention block consisting of multi-head attention, norm,
     and feed forward layers as proposed in Attention is All You Need
     """
 
-    def __init__(self, embed_dim, num_heads, ff_dim, dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False, kdim=None,
-                 vdim=None, batch_first=False, device=None, dtype=None):
-        """ 
-        Instantiation takes same args as torch.nn.MultiheadedAttention
-        Args:
-            embed_dims = 
-            num_heads = the number of heads
-            dd_dim = dimensions of the compressed forward neural net layer. 
-        """
+    def __init__(self, embed_dim, num_heads, ff_dim,
+                 dropout=0.0, bias=True, add_bias_kv=False,
+                 add_zero_attn=False, kdim=None, vdim=None,
+                 batch_first=False, device=None, dtype=None):
         super().__init__()
 
         # query, key, value calculations
@@ -85,7 +80,7 @@ class Self_Attention_Block(nn.Module):
         self.out = nn.Linear(embed_dim, 1)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, input):
+    def forward(self, input, burn):
 
         # Take out channel dimension
         input = torch.squeeze(input)
@@ -96,7 +91,7 @@ class Self_Attention_Block(nn.Module):
         value = self.v_w(input)
 
         # calculate attention out + residual connection and layer norm
-        attn_out = self.MultiheadedAttention(query, key, value)[0]
+        attn_out = self.attn(query, key, value)[0]
         attn_out = self.l_norm(input + attn_out)
 
         # FF net followed by add and layer norm
