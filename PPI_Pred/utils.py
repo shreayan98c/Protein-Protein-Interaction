@@ -93,7 +93,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
             target = batch['label']
             target = target.unsqueeze(1).float()
-            output = self.model(data)
+
             val_loss = self.criterion(output, target)
             predicted = torch.round(output.data)
             self.val_acc(predicted, target)
