@@ -42,8 +42,15 @@ class CrossAttentionBlock(nn.Module):
         # feed forward neural net
         self.ff = PositionwiseFeedForward(embed_dim, ff_dim)
 
+        self.out = nn.Linear(embed_dim, 1)
+        self.sigmoid = nn.Sigmoid()
+
 
     def forward(self, input1, input2):
+        
+        # Take out channel dimension
+        input1 = torch.squeeze(input1)
+        input2 = torch.squeeze(input2)
 
         ### calculate query key value
         query = self.q_w(input1)
@@ -58,7 +65,7 @@ class CrossAttentionBlock(nn.Module):
         ff_out = self.ff(attn_out)
         ff_out = self.l_norm(ff_out + attn_out)
 
-        return ff_out
+        return self.sigmoid(self.out(ff_out))
 
 
 
