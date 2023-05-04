@@ -41,27 +41,32 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t48_15B_UR50D")  # esm2_t36_3B_UR50D()
     MAX_LEN = 500
 
-    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train', small_subset=small_subset, max_len=MAX_LEN)
-    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test', small_subset=small_subset, max_len=MAX_LEN)
-    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid', small_subset=small_subset, max_len=MAX_LEN)
+    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train',
+                                small_subset=small_subset, max_len=MAX_LEN)
+    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test',
+                               small_subset=small_subset, max_len=MAX_LEN)
+    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid',
+                              small_subset=small_subset, max_len=MAX_LEN)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
+    validation_dataloader = DataLoader(
+        val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
-
-    #Lightning class wraps pytorch model for easier reproducability.: jacky
-    simple_cross_attention_block = CrossAttentionBlock(embed_dim = 500,num_heads = 5,ff_dim = 20)
-    simple_self_attention_block = SelfAttentionBlock(embed_dim = 500,num_heads = 5,ff_dim = 20)
-    lightning_model_wrapper = LitNonContrastiveClassifier(simple_self_attention_block)
+    # Lightning class wraps pytorch model for easier reproducability.: jacky
+    simple_cross_attention_block = CrossAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
+    simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
+    lightning_model_wrapper = LitNonContrastiveClassifier(simple_self_attention_block, split=False)
+    # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
-    #Define WandB logger for expeperiment tracking
-    wandb_logger = WandbLogger(project="PPI",name="self_attention_run")
-    
-    #Define a trainer and fit using it 
-    trainer = pl.Trainer(max_epochs=1000,logger = wandb_logger)
-    trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,val_dataloaders=validation_dataloader)
+    # Define WandB logger for expeperiment tracking
+    wandb_logger = WandbLogger(project="PPI", name="self_attention_run")
+
+    # Define a trainer and fit using it
+    trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
+    trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,
+                val_dataloaders=validation_dataloader)
 
     # Define a trainer and fit using it
     trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger)

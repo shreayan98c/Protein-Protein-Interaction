@@ -80,19 +80,19 @@ class SelfAttentionBlock(nn.Module):
         self.out = nn.Linear(embed_dim, 1)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, input, burn):
+    def forward(self, seq1):
 
         # Take out channel dimension
-        input = torch.squeeze(input)
+        seq1 = torch.squeeze(seq1)
 
         # calculate query key value
-        query = self.q_w(input)
-        key = self.k_w(input)
-        value = self.v_w(input)
+        query = self.q_w(seq1)
+        key = self.k_w(seq1)
+        value = self.v_w(seq1)
 
         # calculate attention out + residual connection and layer norm
         attn_out = self.attn(query, key, value)[0]
-        attn_out = self.l_norm(input + attn_out)
+        attn_out = self.l_norm(seq1 + attn_out)
 
         # FF net followed by add and layer norm
         ff_out = self.ff(attn_out)
