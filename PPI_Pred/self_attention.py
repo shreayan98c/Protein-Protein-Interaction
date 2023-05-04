@@ -65,19 +65,19 @@ class SelfAttentionBlock(nn.Module):
         super().__init__()
 
         # query, key, value calculations
-        self.q_w = nn.Linear(embed_dim, embed_dim)
-        self.k_w = nn.Linear(embed_dim, embed_dim)
-        self.v_w = nn.Linear(embed_dim, embed_dim)
+        self.q_w = nn.Linear(2 * embed_dim, 2 * embed_dim)
+        self.k_w = nn.Linear(2 * embed_dim, 2 * embed_dim)
+        self.v_w = nn.Linear(2 * embed_dim, 2 * embed_dim)
 
         # Block to pass input 1 through before passing to cross attention layer
-        self.attn = nn.MultiheadAttention(embed_dim, num_heads)
+        self.attn = nn.MultiheadAttention(2 * embed_dim, num_heads)
         # self.attn = SDP_Attention(self.q_w, self.k_w, self.v_w)
-        self.l_norm = nn.LayerNorm(embed_dim)
+        self.l_norm = nn.LayerNorm(2 * embed_dim)
 
         # feed forward neural net
-        self.ff = PositionwiseFeedForward(embed_dim, ff_dim)
+        self.ff = PositionwiseFeedForward(2 * embed_dim, ff_dim)
 
-        self.out = nn.Linear(embed_dim, 1)
+        self.out = nn.Linear(2 * embed_dim, 1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, seq1):
