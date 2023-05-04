@@ -51,24 +51,6 @@ class SDP_Attention(nn.Module):
 
         return torch.matmul(attn, self.value), attn
 
-# REMOOOVVVVEEEE
-
-
-class EncoderLayer(nn.Module):
-    "Encoder is made up of self-attn and feed forward (defined below)"
-
-    def __init__(self, size, self_attn, feed_forward, dropout):
-        super(EncoderLayer, self).__init__()
-        self.self_attn = self_attn
-        self.feed_forward = feed_forward
-        self.sublayer = clones(SublayerConnection(size, dropout), 2)
-        self.size = size
-
-    def forward(self, x, mask):
-        "Follow Figure 1 (left) for connections."
-        x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, mask))
-        return self.sublayer[1](x, self.feed_forward)
-
 
 class Self_Attention_Block(nn.Module):
     """
@@ -94,7 +76,7 @@ class Self_Attention_Block(nn.Module):
 
         # Block to pass input 1 through before passing to cross attention layer
         self.attn = nn.MultiheadAttention(embed_dim, num_heads)
-        self.attn = SDP_Attention(self.q_w, self.k_w, self.v_w)
+        # self.attn = SDP_Attention(self.q_w, self.k_w, self.v_w)
         self.l_norm = nn.LayerNorm(embed_dim)
 
         # feed forward neural net
@@ -109,13 +91,13 @@ class Self_Attention_Block(nn.Module):
         input = torch.squeeze(input)
 
         # calculate query key value
-        query = self.q_w(input1)
-        key = self.k_w(input2)
-        value = self.v_w(input2)
+        query = self.q_w(input)
+        key = self.k_w(input)
+        value = self.v_w(input)
 
         # calculate attention out + residual connection and layer norm
         attn_out = self.MultiheadedAttention(query, key, value)[0]
-        attn_out = self.l_norm(input1 + attn_out)
+        attn_out = self.l_norm(input + attn_out)
 
         # FF net followed by add and layer norm
         ff_out = self.ff(attn_out)
