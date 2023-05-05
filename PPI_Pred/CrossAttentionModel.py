@@ -19,7 +19,7 @@ class CrossAttentionBlock(nn.Module):
     """
     Cross Attention Block with res connections, batch norm and a feed forward nn as defined in Attention is All You Need"
     """
-    def __init__(self,embed_dim, num_heads, ff_dim, dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False, kdim=None,\
+    def __init__(self,embed_dim, num_heads, ff_dim, seq_len, dropout=0.0, bias=True, add_bias_kv=False, add_zero_attn=False, kdim=None,\
         vdim=None, batch_first=False, device=None, dtype=None):
         """ 
         Instantiation takes same args as torch.nn.MultiheadedAttention
@@ -42,13 +42,11 @@ class CrossAttentionBlock(nn.Module):
         # feed forward neural net
         self.ff = PositionwiseFeedForward(embed_dim, ff_dim)
 
-        self.out = nn.Linear(embed_dim, 1)
+        self.out = nn.Linear(embed_dim * seq_len, 1)
         self.sigmoid = nn.Sigmoid()
 
 
     def forward(self, input1, input2):
-
-        print(input1.shape  , input2.shape)
 
         ### calculate query key value
         query = self.q_w(input1)
@@ -62,5 +60,6 @@ class CrossAttentionBlock(nn.Module):
         ### FF net followed by add and layer norm
         ff_out = self.ff(attn_out)
         ff_out = self.l_norm(ff_out + attn_out)
-
+        ff_out = torch.flatten(ff_out, 1)
+        
         return self.sigmoid(self.out(ff_out))
