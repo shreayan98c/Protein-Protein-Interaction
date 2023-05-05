@@ -50,7 +50,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
                               max_len=MAX_LEN)
 
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
@@ -59,7 +59,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
     lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
-    # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
+    # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
 
     # Define WandB logger for experiment tracking
     wandb_logger = WandbLogger(project="PPI", name="self_attention_run")
@@ -79,7 +79,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    model = SiameseNetwork(d=MAX_LEN)
+    # model = SiameseNetwork(d=MAX_LEN)
 
     # train_simple_linear_model(
     #     model=model,
