@@ -62,7 +62,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="self_attention_run")
+    wandb_logger = WandbLogger(project="PPI", name="cross_attention_run")
 
     # Define a trainer and fit using it
     # trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
