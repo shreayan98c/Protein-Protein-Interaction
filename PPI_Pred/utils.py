@@ -34,7 +34,7 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
         output = None
         if self.split:
-            seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
+            seq1, seq2 = batch['seq1_input_embedding'].float(), batch['seq1_input_embedding'].float()
             output = self.model(seq1,seq2)
         else:
             data = batch['concatenated_inputs'].float()

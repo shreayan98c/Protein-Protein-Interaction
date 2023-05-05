@@ -47,10 +47,8 @@ class CrossAttentionBlock(nn.Module):
 
 
     def forward(self, input1, input2):
-        
-        # Take out channel dimension
-        input1 = torch.squeeze(input1)
-        input2 = torch.squeeze(input2)
+
+        print(input1.shape  , input2.shape)
 
         ### calculate query key value
         query = self.q_w(input1)
@@ -66,9 +64,3 @@ class CrossAttentionBlock(nn.Module):
         ff_out = self.l_norm(ff_out + attn_out)
 
         return self.sigmoid(self.out(ff_out))
-
-
-
-
-
-

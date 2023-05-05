@@ -7,7 +7,7 @@ from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
 from PPI_Pred.CrossAttentionModel import *
 from PPI_Pred.self_attention import *
 from rich.logging import RichHandler
-from transformers import EsmTokenizer
+from transformers import EsmTokenizer, AutoModel
 from torch.utils.data import DataLoader
 
 
@@ -38,14 +38,16 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: levels: Number of levels in the model
     :args: log_interval: Number of batches between logging
     """
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t48_15B_UR50D")  # esm2_t36_3B_UR50D()
+    embed_model_name = 	"facebook/esm2_t6_8M_UR50D"
+    tokenizer = EsmTokenizer.from_pretrained(embed_model_name)  # esm2_t36_3B_UR50D()
+    model = AutoModel.from_pretrained(embed_model_name)
     MAX_LEN = 500
 
-    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train',
+    train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train',
                                 small_subset=small_subset, max_len=MAX_LEN)
-    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test',
+    test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test',
                                small_subset=small_subset, max_len=MAX_LEN)
-    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid',
+    val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid',
                               small_subset=small_subset, max_len=MAX_LEN)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -54,9 +56,9 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
     # Lightning class wraps pytorch model for easier reproducability.: jacky
-    simple_cross_attention_block = CrossAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
-    simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
-    lightning_model_wrapper = LitNonContrastiveClassifier(simple_self_attention_block, split=False)
+    simple_cross_attention_block = CrossAttentionBlock(embed_dim=3000, num_heads=5, ff_dim=20)
+    # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
+    lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
