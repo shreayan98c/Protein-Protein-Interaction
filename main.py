@@ -38,17 +38,17 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: levels: Number of levels in the model
     :args: log_interval: Number of batches between logging
     """
-    embed_model_name = "facebook/esm2_t6_8M_UR50D"
-    tokenizer = EsmTokenizer.from_pretrained(embed_model_name)  # esm2_t36_3B_UR50D(), esm2_t48_15B_UR50D()
-    model = EsmModel.from_pretrained(embed_model_name)  # esm2_t6_8M_UR50D()
+    embed_model_name = "facebook/esm2_t6_8M_UR50D"  # esm2_t12_35M_UR50D, esm2_t6_8M_UR50D
+    tokenizer = EsmTokenizer.from_pretrained(embed_model_name)  # esm2_t36_3B_UR50D, esm2_t48_15B_UR50D
+    model = EsmModel.from_pretrained(embed_model_name)  # esm2_t6_8M_UR50D, esm2_t33_650M_UR50D, esm2_t30_150M_UR50D
     MAX_LEN = 500
 
     train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset,
-                                max_len=MAX_LEN)
+                                max_len=MAX_LEN, neg_sample=3)
     test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset,
-                               max_len=MAX_LEN)
+                               max_len=MAX_LEN, neg_sample=3)
     val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
-                              max_len=MAX_LEN)
+                              max_len=MAX_LEN, neg_sample=3)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
@@ -99,18 +99,16 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #     lr=lr,
     #     logging_interval=log_interval,
     # )
-
-    classification_model = SiameseNetworkClassification()
-
-    train_siamese_classification_model(
-            model=classification_model,
-            pretrain=pretrain,
-            train_loader=train_dataloader,
-            test_loader=test_dataloader,
-            epochs=epochs,
-            lr=lr,
-            logging_interval=log_interval,
-    )
+    # classification_model = SiameseNetworkClassification()
+    #
+    # train_siamese_classification_model(
+    #         model=classification_model,
+    #         train_loader=train_dataloader,
+    #         test_loader=test_dataloader,
+    #         epochs=epochs,
+    #         lr=lr,
+    #         logging_interval=log_interval,
+    # )
 
 
 if __name__ == "__main__":

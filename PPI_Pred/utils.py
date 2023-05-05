@@ -271,7 +271,6 @@ def train_siamese_model(
             log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
 
     if pretrain:
-        print(criterion)
         # Saving model state dict and optimizer state dict once training is complete
         torch.save(model.state_dict(), "siamese_pretrained_state_dict.pt")
         log.info("Model state dict saved for Siamese model with contrastive loss")
