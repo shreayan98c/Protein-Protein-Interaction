@@ -6,7 +6,7 @@ from PPI_Pred.dataset import HuRIDataset
 from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
 from PPI_Pred.CrossAttentionModel import *
 from rich.logging import RichHandler
-from transformers import EsmTokenizer
+from transformers import EsmTokenizer, EsmModel
 from torch.utils.data import DataLoader
 
 
@@ -37,12 +37,13 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: levels: Number of levels in the model
     :args: log_interval: Number of batches between logging
     """
-    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t48_15B_UR50D")  # esm2_t36_3B_UR50D()
+    tokenizer = EsmTokenizer.from_pretrained("facebook/esm2_t6_8M_UR50D")  # esm2_t36_3B_UR50D(), esm2_t48_15B_UR50D()
+    model = EsmModel.from_pretrained("facebook/esm2_t6_8M_UR50D") # esm2_t6_8M_UR50D()
     MAX_LEN = 500
 
-    train_dataset = HuRIDataset(tokenizer=tokenizer, data_split='train', small_subset=small_subset, max_len=MAX_LEN)
-    test_dataset = HuRIDataset(tokenizer=tokenizer, data_split='test', small_subset=small_subset, max_len=MAX_LEN)
-    val_dataset = HuRIDataset(tokenizer=tokenizer, data_split='valid', small_subset=small_subset, max_len=MAX_LEN)
+    train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset, max_len=MAX_LEN)
+    test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset, max_len=MAX_LEN)
+    val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset, max_len=MAX_LEN)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
