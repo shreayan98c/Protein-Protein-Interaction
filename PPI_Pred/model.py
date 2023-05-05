@@ -68,8 +68,9 @@ class SimpleLinearModel(nn.Module):
 
 
 class SiameseNetwork(nn.Module):
-    def __init__(self, d: int = 1):
+    def __init__(self, d: int = 500, pretrain: bool = False):
         super(SiameseNetwork, self).__init__()
+        self.pretrain = pretrain
 
         # blocks of convolutional layers followed by batch normalization, relu, and max pooling
         self.conv1 = nn.Conv1d(in_channels=d, out_channels=16, kernel_size=3, padding=1)
@@ -147,7 +148,73 @@ class SiameseNetwork(nn.Module):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
 
-        diff = torch.abs(output1 - output2)
-        output = self.sigmoid(self.fc3(diff))
+        if self.pretrain:
+            return output1, output2
 
-        return output
+        else:
+            diff = torch.abs(output1 - output2)
+            output = self.sigmoid(self.fc3(diff))
+
+            return output
+
+
+class SiameseNetworkClassification(nn.Module):
+    def __init__(self, model_saved_path: str):
+        super(SiameseNetworkClassification, self).__init__()
+
+        self.model_saved_path = model_saved_path
+        self.model = torch.load(model_saved_path)
+
+        # Freeze the weights of the SiameseNet model
+        for param in self.model.parameters():
+            param.requires_grad = False
+
+        self.model_dict = self.model.state_dict()
+
+        # weight initialization
+        def init_weights(m):
+            if isinstance(m, nn.Linear):
+                torch.nn.init.xavier_uniform(m.weight)
+                m.bias.data.fill_(0.01)
+
+        self.apply(init_weights)
+
+    def forward_once(self, x):
+        # convolutional layers
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu1(x)
+        x = self.pool1(x)
+
+        x = self.conv2(x)
+        x = self.bn2(x)
+        x = self.relu2(x)
+        x = self.pool2(x)
+
+        x = self.conv3(x)
+        x = self.bn3(x)
+        x = self.relu3(x)
+        x = self.pool3(x)
+
+        # flatten for fully connected layers
+        x = x.view(x.size(0), -1)
+
+        # fully connected layers
+        x = self.fc1(x)
+        x = self.bn4(x)
+        x = self.relu4(x)
+        x = self.dropout1(x)
+
+        x = self.fc2(x)
+        x = self.bn5(x)
+        x = self.relu5(x)
+        x = self.dropout2(x)
+
+        return x
+
+    def forward(self, input1, input2):
+
+        output1 = self.forward_once(input1)
+        output2 = self.forward_once(input2)
+
+        return output1, output2

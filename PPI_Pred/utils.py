@@ -190,6 +190,7 @@ def train_simple_linear_model(
 
 def train_siamese_model(
         model: nn.Module,
+        pretrain: bool,
         train_loader,
         test_loader,
         epochs: int,
@@ -199,6 +200,7 @@ def train_siamese_model(
     """
     Train a simple linear model.
     :param model: model to train
+    :param pretrain: whether to pretrain the model or not
     :param train_loader: train loader data
     :param test_loader: test loader data
     :param epochs: number of epochs
@@ -206,8 +208,10 @@ def train_siamese_model(
     :param logging_interval: number of batches between logging
     :return:
     """
-    # criterion = ContrastiveLoss(margin=1.)
-    criterion = BCELoss()
+    if pretrain:
+        criterion = ContrastiveLoss(margin=1.)
+    else:
+        criterion = BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
     avg_loss = 0.0
@@ -223,12 +227,15 @@ def train_siamese_model(
             target = target.unsqueeze(1).float()
             optimizer.zero_grad()
 
-            # # if using contrastive loss
-            # output1, output2 = model(seq1, seq2)
-            # loss = criterion(output1, output2, target, size_average=True)
+            if pretrain:
+                # if using contrastive loss
+                output1, output2 = model(seq1, seq2)
+                loss = criterion(output1, output2, target, size_average=True)
 
-            output = model(seq1, seq2)
-            loss = criterion(output, target)
+            else:
+                output = model(seq1, seq2)
+                loss = criterion(output, target)
+
             avg_loss += loss.mean().item()
             loss.backward()
             optimizer.step()
@@ -240,24 +247,108 @@ def train_siamese_model(
         if epoch % 5 == 0:
             torch.save(model, "model.pt")
 
-        model.eval()
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            for batch_idx, batch in track(
-                    enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
-            ):
-                seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
-                target = target.unsqueeze(1).float()
+        if not pretrain:
+            model.eval()
+            correct = 0
+            total = 0
+            with torch.no_grad():
+                for batch_idx, batch in track(
+                        enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
+                ):
+                    seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+                    target = target.unsqueeze(1).float()
 
-                # # if using contrastive loss
-                # output1, output2 = model(seq1, seq2)
-                # loss = criterion(output1, output2, target, size_average=False)
-                # predicted = loss > 0.5
+                    # # if using contrastive loss
+                    # output1, output2 = model(seq1, seq2)
+                    # loss = criterion(output1, output2, target, size_average=False)
+                    # predicted = loss > 0.5
 
-                output = model(seq1, seq2)
-                predicted = torch.round(output.data)
-                total += target.size(0)
-                correct += (predicted == target).sum().item()
+                    output = model(seq1, seq2)
+                    predicted = torch.round(output.data)
+                    total += target.size(0)
+                    correct += (predicted == target).sum().item()
 
-        log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
+            log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
+
+    if pretrain:
+        print(criterion)
+        # Saving model state dict and optimizer state dict once training is complete
+        torch.save(model.state_dict(), "siamese_pretrained_state_dict.pt")
+        log.info("Model state dict saved for Siamese model with contrastive loss")
+
+
+def train_siamese_classification_model(
+        model: nn.Module,
+        train_loader,
+        test_loader,
+        epochs: int,
+        lr: float,
+        logging_interval: int = 100,
+):
+    """
+    Train the classification model on top of the pretrained Siamese network.
+    :param model: model to train
+    :param train_loader: train loader data
+    :param test_loader: test loader data
+    :param epochs: number of epochs
+    :param lr: learning rate
+    :param logging_interval: number of batches between logging
+    :return: None
+    """
+    # criterion = ContrastiveLoss(margin=1.)
+    criterion = BCELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    avg_loss = 0.0
+    train_acc_store = []
+    val_acc_store = []
+
+    for epoch in range(epochs):
+        model.train()
+        for batch_idx, batch in track(
+                enumerate(train_loader), total=len(train_loader), description=f"Train epoch {epoch}"
+        ):
+            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+            optimizer.zero_grad()
+
+            # if using contrastive loss
+            output1, output2 = model(seq1, seq2)
+            loss = criterion(output1, output2, target, size_average=True)
+
+            # output = model(seq1, seq2)
+            # loss = criterion(output, target)
+            avg_loss += loss.mean().item()
+            loss.backward()
+            optimizer.step()
+
+            if batch_idx % logging_interval == 0:
+                log.info(f"Epoch {epoch} batch {batch_idx} loss: {avg_loss / logging_interval:.4f}")
+                avg_loss = 0.0
+
+        if epoch % 5 == 0:
+            torch.save(model, "model.pt")
+
+        # model.eval()
+        # correct = 0
+        # total = 0
+        # with torch.no_grad():
+        #     for batch_idx, batch in track(
+        #             enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
+        #     ):
+        #         seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+        #         target = target.unsqueeze(1).float()
+        #
+        #         # # if using contrastive loss
+        #         # output1, output2 = model(seq1, seq2)
+        #         # loss = criterion(output1, output2, target, size_average=False)
+        #         # predicted = loss > 0.5
+        #
+        #         output = model(seq1, seq2)
+        #         predicted = torch.round(output.data)
+        #         total += target.size(0)
+        #         correct += (predicted == target).sum().item()
+        #
+        # log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
+
+

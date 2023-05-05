@@ -79,7 +79,8 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    # model = SiameseNetwork(d=MAX_LEN)
+    # pretrain = False
+    # model = SiameseNetwork(d=MAX_LEN, pretrain=pretrain)
 
     # train_simple_linear_model(
     #     model=model,
@@ -91,6 +92,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # )
     # train_siamese_model(
     #     model=model,
+    #     pretrain=pretrain,
     #     train_loader=train_dataloader,
     #     test_loader=test_dataloader,
     #     epochs=epochs,
