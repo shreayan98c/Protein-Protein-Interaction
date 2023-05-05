@@ -219,13 +219,13 @@ def train_siamese_model(
         for batch_idx, batch in track(
                 enumerate(train_loader), total=len(train_loader), description=f"Train epoch {epoch}"
         ):
-            seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
             target = target.unsqueeze(1).float()
             optimizer.zero_grad()
 
             # # if using contrastive loss
             # output1, output2 = model(seq1, seq2)
-            # loss = criterion(output1, output2, target, size_average=False)
+            # loss = criterion(output1, output2, target, size_average=True)
 
             output = model(seq1, seq2)
             loss = criterion(output, target)
@@ -247,7 +247,7 @@ def train_siamese_model(
             for batch_idx, batch in track(
                     enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
             ):
-                seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
+                seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
                 target = target.unsqueeze(1).float()
 
                 # # if using contrastive loss

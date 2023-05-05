@@ -88,7 +88,7 @@ class SiameseNetwork(nn.Module):
         self.pool3 = nn.MaxPool1d(kernel_size=2, stride=2)
 
         # define fully connected layers
-        self.fc1 = nn.Linear(in_features=64 * 62, out_features=128)
+        self.fc1 = nn.Linear(in_features=64 * 40, out_features=128)
         self.bn4 = nn.BatchNorm1d(num_features=128)
         self.relu4 = nn.ReLU()
         self.dropout1 = nn.Dropout(p=0.5)

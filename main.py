@@ -43,22 +43,25 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     model = EsmModel.from_pretrained(embed_model_name)  # esm2_t6_8M_UR50D()
     MAX_LEN = 500
 
-    train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset, max_len=MAX_LEN)
-    test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset, max_len=MAX_LEN)
-    val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset, max_len=MAX_LEN)
+    train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset,
+                                max_len=MAX_LEN)
+    test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset,
+                               max_len=MAX_LEN)
+    val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
+                              max_len=MAX_LEN)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
-    # Lightning class wraps pytorch model for easier reproducability.: jacky
+    # Lightning class wraps pytorch model for easier reproducibility
     simple_cross_attention_block = CrossAttentionBlock(embed_dim=3000, num_heads=5, ff_dim=20)
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
     lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=1))
 
-    # Define WandB logger for expeperiment tracking
+    # Define WandB logger for experiment tracking
     wandb_logger = WandbLogger(project="PPI", name="self_attention_run")
 
     # Define a trainer and fit using it
@@ -76,7 +79,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    # model = SiameseNetwork(d=1)
+    model = SiameseNetwork(d=MAX_LEN)
 
     # train_simple_linear_model(
     #     model=model,
