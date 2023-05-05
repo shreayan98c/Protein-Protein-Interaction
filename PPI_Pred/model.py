@@ -159,62 +159,39 @@ class SiameseNetwork(nn.Module):
 
 
 class SiameseNetworkClassification(nn.Module):
-    def __init__(self, model_saved_path: str):
+    def __init__(self):
         super(SiameseNetworkClassification, self).__init__()
 
-        self.model_saved_path = model_saved_path
-        self.model = torch.load(model_saved_path)
+        self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
+        self.pretrained_model.load_state_dict(torch.load("siamese_pretrained_state_dict.pt"))
+        print('Loaded the pretrained model trained on Contrastive Loss')
+        self.pretrained_model.eval()
 
         # Freeze the weights of the SiameseNet model
-        for param in self.model.parameters():
+        for param in self.pretrained_model.parameters():
             param.requires_grad = False
 
-        self.model_dict = self.model.state_dict()
+        self.relu1 = nn.ReLU()
+        self.relu2 = nn.ReLU()
+        self.dropout1 = nn.Dropout(p=0.5)
+        self.dropout2 = nn.Dropout(p=0.5)
+
+        self.fc1 = nn.Linear(in_features=64, out_features=10)
+        self.fc2 = nn.Linear(in_features=10, out_features=1)
+        self.sigmoid = nn.Sigmoid()
 
         # weight initialization
-        def init_weights(m):
-            if isinstance(m, nn.Linear):
-                torch.nn.init.xavier_uniform(m.weight)
-                m.bias.data.fill_(0.01)
-
-        self.apply(init_weights)
-
-    def forward_once(self, x):
-        # convolutional layers
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu1(x)
-        x = self.pool1(x)
-
-        x = self.conv2(x)
-        x = self.bn2(x)
-        x = self.relu2(x)
-        x = self.pool2(x)
-
-        x = self.conv3(x)
-        x = self.bn3(x)
-        x = self.relu3(x)
-        x = self.pool3(x)
-
-        # flatten for fully connected layers
-        x = x.view(x.size(0), -1)
-
-        # fully connected layers
-        x = self.fc1(x)
-        x = self.bn4(x)
-        x = self.relu4(x)
-        x = self.dropout1(x)
-
-        x = self.fc2(x)
-        x = self.bn5(x)
-        x = self.relu5(x)
-        x = self.dropout2(x)
-
-        return x
+        torch.nn.init.xavier_uniform(self.fc1.weight)
+        self.fc1.bias.data.fill_(0.01)
+        torch.nn.init.xavier_uniform(self.fc2.weight)
+        self.fc2.bias.data.fill_(0.01)
 
     def forward(self, input1, input2):
 
-        output1 = self.forward_once(input1)
-        output2 = self.forward_once(input2)
+        output1, output2 = self.pretrained_model(input1, input2)
+        diff = torch.abs(output1 - output2)
+        output = self.dropout1(self.relu1(self.fc1(diff)))
+        output = self.dropout2(self.relu2(self.fc2(output)))
+        output = self.sigmoid(output)
 
-        return output1, output2
+        return output

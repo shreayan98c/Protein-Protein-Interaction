@@ -295,7 +295,6 @@ def train_siamese_classification_model(
     :param logging_interval: number of batches between logging
     :return: None
     """
-    # criterion = ContrastiveLoss(margin=1.)
     criterion = BCELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
@@ -313,11 +312,9 @@ def train_siamese_classification_model(
             optimizer.zero_grad()
 
             # if using contrastive loss
-            output1, output2 = model(seq1, seq2)
-            loss = criterion(output1, output2, target, size_average=True)
+            output = model(seq1, seq2)
+            loss = criterion(output, target)
 
-            # output = model(seq1, seq2)
-            # loss = criterion(output, target)
             avg_loss += loss.mean().item()
             loss.backward()
             optimizer.step()
@@ -329,26 +326,19 @@ def train_siamese_classification_model(
         if epoch % 5 == 0:
             torch.save(model, "model.pt")
 
-        # model.eval()
-        # correct = 0
-        # total = 0
-        # with torch.no_grad():
-        #     for batch_idx, batch in track(
-        #             enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
-        #     ):
-        #         seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq2_input_ids'].float(), batch['label']
-        #         target = target.unsqueeze(1).float()
-        #
-        #         # # if using contrastive loss
-        #         # output1, output2 = model(seq1, seq2)
-        #         # loss = criterion(output1, output2, target, size_average=False)
-        #         # predicted = loss > 0.5
-        #
-        #         output = model(seq1, seq2)
-        #         predicted = torch.round(output.data)
-        #         total += target.size(0)
-        #         correct += (predicted == target).sum().item()
-        #
-        # log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
+        model.eval()
+        correct = 0
+        total = 0
+        with torch.no_grad():
+            for batch_idx, batch in track(
+                    enumerate(test_loader), total=len(test_loader), description=f"Test epoch {epoch}"
+            ):
+                seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+                target = target.unsqueeze(1).float()
 
+                output = model(seq1, seq2)
+                predicted = torch.round(output.data)
+                total += target.size(0)
+                correct += (predicted == target).sum().item()
 
+        log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")

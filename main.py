@@ -3,7 +3,7 @@ import logging
 import transformers
 from PPI_Pred.utils import *
 from PPI_Pred.dataset import HuRIDataset
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
 from PPI_Pred.CrossAttentionModel import *
 from PPI_Pred.self_attention import *
 from rich.logging import RichHandler
@@ -79,7 +79,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    # pretrain = False
+    pretrain = True
     # model = SiameseNetwork(d=MAX_LEN, pretrain=pretrain)
 
     # train_simple_linear_model(
@@ -99,6 +99,18 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #     lr=lr,
     #     logging_interval=log_interval,
     # )
+
+    classification_model = SiameseNetworkClassification()
+
+    train_siamese_classification_model(
+            model=classification_model,
+            pretrain=pretrain,
+            train_loader=train_dataloader,
+            test_loader=test_dataloader,
+            epochs=epochs,
+            lr=lr,
+            logging_interval=log_interval,
+    )
 
 
 if __name__ == "__main__":
