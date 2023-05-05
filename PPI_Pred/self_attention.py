@@ -51,7 +51,51 @@ class SDP_Attention(nn.Module):
 
         return torch.matmul(attn, self.value), attn
 
+class SelfAttentionBlockSingleSequence(nn.Module):
+    """
+    Same as below SelfAttentionBlock but designed to run on a single sequence instead of
+    two concatanted ones.
+    """
 
+    def __init__(self, embed_dim, num_heads, ff_dim,
+                 dropout=0.0, bias=True, add_bias_kv=False,
+                 add_zero_attn=False, kdim=None, vdim=None,
+                 batch_first=False, device=None, dtype=None):
+        super().__init__()
+
+        # query, key, value calculations
+        self.q_w = nn.Linear(embed_dim,  embed_dim)
+        self.k_w = nn.Linear(embed_dim, embed_dim)
+        self.v_w = nn.Linear(embed_dim, embed_dim)
+
+        # Block to pass input 1 through before passing to cross attention layer
+        self.attn = nn.MultiheadAttention(embed_dim, num_heads)
+        # self.attn = SDP_Attention(self.q_w, self.k_w, self.v_w)
+        self.l_norm = nn.LayerNorm(embed_dim)
+
+        # feed forward neural net
+        self.ff = PositionwiseFeedForward(embed_dim, ff_dim)
+
+    def forward(self, seq1):
+
+        # Take out channel dimension
+        seq1 = torch.squeeze(seq1)
+
+        # calculate query key value
+        query = self.q_w(seq1)
+        key = self.k_w(seq1)
+        value = self.v_w(seq1)
+
+        # calculate attention out + residual connection and layer norm
+        attn_out = self.attn(query, key, value)[0]
+        attn_out = self.l_norm(seq1 + attn_out)
+
+        # FF net followed by add and layer norm
+        ff_out = self.ff(attn_out)
+        ff_out = self.l_norm(ff_out + attn_out)
+
+        return ff_out
+    
 class SelfAttentionBlock(nn.Module):
     """
     Self-Attention block consisting of multi-head attention, norm,
