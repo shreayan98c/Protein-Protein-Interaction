@@ -16,11 +16,11 @@ log = logging.getLogger(__name__)
 # define a lightning Module to wrap around any non-contrastive classifier we want
 # TODO: extend capabilities to contrastive classifiers.
 class LitNonContrastiveClassifier(pl.LightningModule):
-    def __init__(self, model,split = True):
+    def __init__(self, model, split=True):
         super().__init__()
         self.model = model
         self.criterion = nn.BCELoss()
-        self.split = split # determines if the two sequences should be split on input 
+        self.split = split  # determines if the two sequences should be split on input
         self.save_hyperparameters()
 
         # declare metrics to track
@@ -34,24 +34,24 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
         output = None
         if self.split:
-            seq1, seq2 = batch['seq1_input_embedding'].float(), batch['seq1_input_embedding'].float()
-            output = self.model(seq1,seq2)
+            seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+            output = self.model(seq1, seq2)
         else:
             data = batch['concatenated_inputs'].float()
             output = self.model(data)
-        
+
         target = batch['label']
         target = target.unsqueeze(1).float()
         loss = self.criterion(output, target)
         predicted = torch.round(output.data)
-        self.train_acc(predicted,target)
+        self.train_acc(predicted, target)
         # Logging to wandb
-        self.log("train_loss", loss, on_step = False, on_epoch= True)
-        self.log("train_acc", self.train_acc,on_step=False,on_epoch=True)
+        self.log("train_loss", loss, on_step=False, on_epoch=True)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
         return loss
 
     # def validation_step(self,batch,batch_idx): This one has  bugs? - Jacky 
-        
+
     #     with torch.no_grad():
     #         seq1, seq2, target = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float(), batch['label']
     #         output = self.model(seq1,seq2)
@@ -85,8 +85,8 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         with torch.no_grad():
             output = None
             if self.split:
-                seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
-                output = self.model(seq1,seq2)
+                seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+                output = self.model(seq1, seq2)
             else:
                 data = batch['concatenated_inputs'].float()
                 output = self.model(data)
@@ -109,20 +109,20 @@ class LitNonContrastiveClassifier(pl.LightningModule):
 
         output = None
         if self.split:
-            seq1, seq2 = batch['seq1_input_ids'].float(), batch['seq1_input_ids'].float()
-            output = self.model(seq1,seq2)
+            seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+            output = self.model(seq1, seq2)
         else:
             data = batch['concatenated_inputs'].float()
             output = self.model(data)
-        
+
         target = batch['label']
         target = target.unsqueeze(1).float()
-  
+
         test_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
-        self.test_acc(predicted,target)
-        self.log("test_loss", test_loss, on_step= False, on_epoch= True)
-        self.log("test_acc",self.test_acc, on_step = False, on_epoch  = True)  
+        self.test_acc(predicted, target)
+        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
 
 
 def train_simple_linear_model(

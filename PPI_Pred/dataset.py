@@ -89,8 +89,8 @@ class HuRIDataset(torch.utils.data.Dataset):
         seq2_encoded = torch.squeeze(seq2_encoded)
 
         return {
-            'seq1_input_ids': seq2_encoded,
-            'seq2_input_ids': seq2_encoded,
+            'seq1_encoded': seq2_encoded,
+            'seq2_encoded': seq2_encoded,
             'concatenated_inputs': torch.cat((seq1_encoded, seq2_encoded), dim=1),
             'diff_inputs': torch.abs(seq1_encoded - seq2_encoded),
             'label': torch.tensor(record['Y'])
