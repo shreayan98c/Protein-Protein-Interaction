@@ -59,8 +59,11 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
     lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
+
+    pretrain = True
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
-    lightning_model_wrapper = LitContrastiveClassifier(SiameseNetwork(d=MAX_LEN, pretrain=True), infer=False)
+    # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetwork(d=MAX_LEN, pretrain=pretrain))
+    # lightning_model_wrapper = LitContrastiveClassifier(SiameseNetwork(d=MAX_LEN, pretrain=pretrain))
 
     # Define WandB logger for experiment tracking
     wandb_logger = WandbLogger(project="PPI", name="self_then_cross_attention_run")
