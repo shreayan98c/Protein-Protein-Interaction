@@ -44,11 +44,11 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     MAX_LEN = 500
 
     train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset,
-                                max_len=MAX_LEN, neg_sample=1)
+                                max_len=MAX_LEN, neg_sample=3)
     test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset,
-                               max_len=MAX_LEN, neg_sample=1)
+                               max_len=MAX_LEN, neg_sample=3)
     val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
-                              max_len=MAX_LEN, neg_sample=1)
+                              max_len=MAX_LEN, neg_sample=3)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
