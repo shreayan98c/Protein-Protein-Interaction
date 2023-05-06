@@ -8,7 +8,7 @@ from rich.progress import track
 from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork  # , SiameseNetworkClassification
 
 log = logging.getLogger(__name__)
 
