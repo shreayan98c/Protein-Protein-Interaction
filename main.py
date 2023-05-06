@@ -79,6 +79,10 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
+    if pretrain:
+        trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
+        log.info("Model state dict saved for Siamese model with contrastive loss")
+
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
     # pretrain = True
     # model = SiameseNetwork(d=MAX_LEN, pretrain=pretrain)

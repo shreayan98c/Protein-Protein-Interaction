@@ -162,8 +162,9 @@ class SiameseNetworkClassification(nn.Module):
     def __init__(self):
         super(SiameseNetworkClassification, self).__init__()
 
-        self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
-        self.pretrained_model.load_state_dict(torch.load("siamese_pretrained_state_dict.pt"))
+        # self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
+        # self.pretrained_model.load_state_dict(torch.load("siamese_pretrained_state_dict.pt"))
+        self.pretrained_model = torch.load("siamese_pretrained.pt")
         print('Loaded the pretrained model trained on Contrastive Loss')
         self.pretrained_model.eval()
 
