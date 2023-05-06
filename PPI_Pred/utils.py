@@ -125,6 +125,55 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
 
 
+class LitContrastiveClassifier(pl.LightningModule):
+    def __init__(self, model, infer=False):
+        super().__init__()
+        self.model = model
+        if infer:
+            self.criterion = nn.BCELoss()
+        else:
+            self.criterion = ContrastiveLoss(margin=1.0)
+        self.save_hyperparameters()
+
+    def training_step(self, batch, batch_idx):
+        # training_step defines the train loop.
+        # it is independent of forward
+        seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+        output1, output2 = self.model(seq1, seq2)
+        target = batch['label']
+        target = target.unsqueeze(1).float()
+        loss = self.criterion(output1, output2, target, size_average=True)
+        # Logging to wandb
+        self.log("train_loss", loss, on_step=False, on_epoch=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        with torch.no_grad():
+            seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+            output1, output2 = self.model(seq1, seq2)
+
+            target = batch['label']
+            target = target.unsqueeze(1).float()
+
+            val_loss = self.criterion(output1, output2, target, size_average=True)
+            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.parameters(), lr=1e-4)
+        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": sch}}
+
+    def test_step(self, batch, batch_idx):
+        seq1, seq2 = batch['seq1_encoded'].float(), batch['seq2_encoded'].float()
+        output1, output2 = self.model(seq1, seq2)
+
+        target = batch['label']
+        target = target.unsqueeze(1).float()
+
+        test_loss = self.criterion(output1, output2, target, size_average=True)
+        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+
+
 def train_simple_linear_model(
         model: nn.Module,
         train_loader,
