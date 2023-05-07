@@ -3,7 +3,7 @@ import logging
 import transformers
 from PPI_Pred.utils import *
 from PPI_Pred.dataset import HuRIDataset
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkPretrainer, SiameseNetworkClassification
 from PPI_Pred.CrossAttentionModel import *
 from PPI_Pred.self_attention import *
 from rich.logging import RichHandler
@@ -44,25 +44,29 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     MAX_LEN = 500
 
     train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset,
-                                max_len=MAX_LEN, neg_sample=1)
+                                max_len=MAX_LEN, neg_sample=2)
     test_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='test', small_subset=small_subset,
-                               max_len=MAX_LEN, neg_sample=1)
+                               max_len=MAX_LEN, neg_sample=2)
     val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
-                              max_len=MAX_LEN, neg_sample=1)
+                              max_len=MAX_LEN, neg_sample=2)
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True, shuffle=True)
     validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
     # Lightning class wraps pytorch model for easier reproducibility
-    simple_cross_attention_model = SelfThenCrossAttentionModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN)
+    # simple_cross_attention_model = SelfThenCrossAttentionModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN)
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
-    lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
+    # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
+
+    pretrain = True
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
+    lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
+    # lightning_model_wrapper = LitContrastiveClassifier()
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="self_then_cross_attention_run")
+    wandb_logger = WandbLogger(project="PPI", name="siamese_net_pretrain")
 
     # Define a trainer and fit using it
     # trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
@@ -78,8 +82,12 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
+    if pretrain:
+        trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
+        log.info("Model state dict saved for Siamese model with contrastive loss")
+
     # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    pretrain = True
+    # pretrain = True
     # model = SiameseNetwork(d=MAX_LEN, pretrain=pretrain)
 
     # train_simple_linear_model(

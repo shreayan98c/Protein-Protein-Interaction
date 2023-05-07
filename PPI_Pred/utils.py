@@ -8,7 +8,7 @@ from rich.progress import track
 from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
 
 log = logging.getLogger(__name__)
 
@@ -118,6 +118,97 @@ class LitNonContrastiveClassifier(pl.LightningModule):
         target = batch['label']
         target = target.unsqueeze(1).float()
 
+        test_loss = self.criterion(output, target)
+        predicted = torch.round(output.data)
+        self.test_acc(predicted, target)
+        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+        self.log("test_acc", self.test_acc, on_step=False, on_epoch=True)
+
+
+class LitContrastivePretrainer(pl.LightningModule):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.criterion = ContrastiveLoss(margin=1.0)
+        self.save_hyperparameters()
+
+    def training_step(self, batch, batch_idx):
+        # training_step defines the train loop.
+        # it is independent of forward
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output1, output2 = self.model(seq1, seq2)
+        loss = self.criterion(output1, output2, target, size_average=True)
+        # Logging to wandb
+        self.log("train_loss", loss, on_step=False, on_epoch=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        with torch.no_grad():
+            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+            output1, output2 = self.model(seq1, seq2)
+            val_loss = self.criterion(output1, output2, target, size_average=True)
+            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.parameters(), lr=1e-4)
+        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": sch}}
+
+    def test_step(self, batch, batch_idx):
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output1, output2 = self.model(seq1, seq2)
+        test_loss = self.criterion(output1, output2, target, size_average=True)
+        self.log("test_loss", test_loss, on_step=False, on_epoch=True)
+
+
+class LitContrastiveClassifier(pl.LightningModule):
+    def __init__(self):
+        super().__init__()
+        self.criterion = nn.BCELoss()
+        self.classification_model = SiameseNetworkClassification()
+        # declare metrics to track
+        self.train_acc = torchmetrics.classification.BinaryAccuracy()
+        self.val_acc = torchmetrics.classification.BinaryAccuracy()
+        self.test_acc = torchmetrics.classification.BinaryAccuracy()
+        self.save_hyperparameters()
+
+    def training_step(self, batch, batch_idx):
+        # training_step defines the train loop.
+        # it is independent of forward
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output = self.classification_model(seq1, seq2)
+        loss = self.criterion(output, target)
+        predicted = torch.round(output.data)
+        self.train_acc(predicted, target)
+        # Logging to wandb
+        self.log("train_loss", loss, on_step=False, on_epoch=True)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        with torch.no_grad():
+            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
+            target = target.unsqueeze(1).float()
+            output = self.classification_model(seq1, seq2)
+            val_loss = self.criterion(output, target)
+            predicted = torch.round(output.data)
+            self.val_acc(predicted, target)
+            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+            self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+
+    def configure_optimizers(self):
+        optimizer = optim.Adam(self.parameters(), lr=1e-4)
+        sch = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.9)
+        return {"optimizer": optimizer, "lr_scheduler": {"scheduler": sch}}
+
+    def test_step(self, batch, batch_idx):
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output = self.classification_model(seq1, seq2)
         test_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.test_acc(predicted, target)
@@ -273,6 +364,7 @@ def train_siamese_model(
     if pretrain:
         # Saving model state dict and optimizer state dict once training is complete
         torch.save(model.state_dict(), "siamese_pretrained_state_dict.pt")
+        torch.save(model, "siamese_pretrained.pt")
         log.info("Model state dict saved for Siamese model with contrastive loss")
 
 
