@@ -23,8 +23,9 @@ conda config --set allow_conda_downgrades true
 #clear cache
 pip cache purge
 
-pip install torch torchvision torchaudio
-pip install -r requirements.txt
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+pip install pandas==1.4.4
+
 conda config --set allow_conda_downgrades false
 #conda list
 
@@ -33,4 +34,4 @@ conda config --set allow_conda_downgrades false
 #huggingface-cli delete-cache
 
 #runs your code
-srun python main.py train --batch-size 32 --epochs 10 --lr 1e-4 --small_subset True
+srun python main.py train --batch-size 16 --epochs 1 --lr 1e-4 --small_subset True
