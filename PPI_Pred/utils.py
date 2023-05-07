@@ -144,12 +144,11 @@ class LitContrastivePretrainer(pl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        with torch.no_grad():
-            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
-            target = target.unsqueeze(1).float()
-            output1, output2 = self.model(seq1, seq2)
-            val_loss = self.criterion(output1, output2, target, size_average=True)
-            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output1, output2 = self.model(seq1, seq2)
+        val_loss = self.criterion(output1, output2, target, size_average=True)
+        self.log("val_loss", val_loss, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-4)
@@ -190,15 +189,14 @@ class LitContrastiveClassifier(pl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        with torch.no_grad():
-            seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
-            target = target.unsqueeze(1).float()
-            output = self.classification_model(seq1, seq2)
-            val_loss = self.criterion(output, target)
-            predicted = torch.round(output.data)
-            self.val_acc(predicted, target)
-            self.log("val_loss", val_loss, on_step=False, on_epoch=True)
-            self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
+        seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
+        target = target.unsqueeze(1).float()
+        output = self.classification_model(seq1, seq2)
+        val_loss = self.criterion(output, target)
+        predicted = torch.round(output.data)
+        self.val_acc(predicted, target)
+        self.log("val_loss", val_loss, on_step=False, on_epoch=True)
+        self.log("valid_acc", self.val_acc, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr=1e-4)

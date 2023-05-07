@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --time=12:00:00
+#SBATCH --time=24:00:00
 #SBATCH --job-name="CS 601.471/671 final project"
 
 module load anaconda
@@ -30,9 +30,5 @@ pip install pandas==1.4.4
 conda config --set allow_conda_downgrades false
 #conda list
 
-#clear cache
-#pip install huggingface_hub["cli"]
-#huggingface-cli delete-cache
-
 #runs your code
-srun python main.py train --batch-size 8 --epochs 1 --lr 1e-4 --small_subset True
+srun python main.py train --batch-size 16 --epochs 2 --lr 1e-4 --small_subset True

@@ -82,6 +82,8 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
+    trainer.save_checkpoint("model_weights.pt", weights_only=True)
+
     if pretrain:
         trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
         log.info("Model state dict saved for Siamese model with contrastive loss")
