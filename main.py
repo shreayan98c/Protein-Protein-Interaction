@@ -69,13 +69,17 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     wandb_logger = WandbLogger(project="PPI", name="siamese_net_pretrain")
 
     # Define a trainer and fit using it
-    trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger)
+    if not os.path.isdir('checkpoints'):
+        os.mkdir('checkpoints')
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(dirpath="checkpoints/", save_top_k=2, monitor="val_loss")
+    trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger, callbacks=[checkpoint_callback])
 
     # if there is a saved checkpoint, place the checkpoint file in the same directory as this file
     # rename the checkpoint file to checkpoint.ckpt so that the trainer can resume from the checkpoint
     if os.path.exists("checkpoint.ckpt"):
-        trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
-        log.info("Found existing checkpoint.ckpt, resuming training")
+        # trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
+        lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(checkpoint_path="checkpoint.ckpt")
+        log.info("Found existing checkpoint.ckpt, loaded model")
 
     trainer.fit(model=lightning_model_wrapper,
                 train_dataloaders=train_dataloader,
