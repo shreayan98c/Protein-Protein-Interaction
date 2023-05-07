@@ -24,6 +24,7 @@ conda config --set allow_conda_downgrades true
 pip cache purge
 
 conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+pip install -r requirements.txt
 pip install pandas==1.4.4
 
 conda config --set allow_conda_downgrades false
