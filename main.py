@@ -40,8 +40,10 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     :args: log_interval: Number of batches between logging
     """
     embed_model_name = "facebook/esm2_t6_8M_UR50D"  # esm2_t12_35M_UR50D, esm2_t6_8M_UR50D
-    tokenizer = EsmTokenizer.from_pretrained(embed_model_name)  # esm2_t36_3B_UR50D, esm2_t48_15B_UR50D
-    model = EsmModel.from_pretrained(embed_model_name)  # esm2_t6_8M_UR50D, esm2_t33_650M_UR50D, esm2_t30_150M_UR50D
+    # esm2_t36_3B_UR50D, esm2_t48_15B_UR50D
+    tokenizer = EsmTokenizer.from_pretrained(embed_model_name)
+    # esm2_t6_8M_UR50D, esm2_t33_650M_UR50D, esm2_t30_150M_UR50D
+    model = EsmModel.from_pretrained(embed_model_name)
     MAX_LEN = 500
 
     train_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='train', small_subset=small_subset,
@@ -51,8 +53,10 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     val_dataset = HuRIDataset(tokenizer=tokenizer, model=model, data_split='valid', small_subset=small_subset,
                               max_len=MAX_LEN, neg_sample=2)
 
-    train_dataloader = DataLoader(train_dataset, batch_size=batch_size, drop_last=True, shuffle=True)
-    validation_dataloader = DataLoader(val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
+    train_dataloader = DataLoader(train_dataset, batch_size=batch_size,
+                                  drop_last=True, shuffle=True)
+    validation_dataloader = DataLoader(
+        val_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
     # Lightning class wraps pytorch model for easier reproducibility
@@ -61,24 +65,26 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
 
-    # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
-    lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
+    lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
+    # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
     # lightning_model_wrapper = LitContrastiveClassifier()
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="siamese_net_pretrain")
+    wandb_logger = WandbLogger(project="PPI", name="siamese_net")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
         os.mkdir('checkpoints')
-    checkpoint_callback = pl.callbacks.ModelCheckpoint(dirpath="checkpoints/", save_top_k=2, monitor="val_loss")
+    checkpoint_callback = pl.callbacks.ModelCheckpoint(
+        dirpath="checkpoints/", save_top_k=2, monitor="val_loss")
     trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger, callbacks=[checkpoint_callback])
 
     # if there is a saved checkpoint, place the checkpoint file in the same directory as this file
     # rename the checkpoint file to checkpoint.ckpt so that the trainer can resume from the checkpoint
     if os.path.exists("checkpoint.ckpt"):
         # trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
-        lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(checkpoint_path="checkpoint.ckpt")
+        lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(
+            checkpoint_path="checkpoint.ckpt")
         log.info("Found existing checkpoint.ckpt, loaded model")
 
     trainer.fit(model=lightning_model_wrapper,
@@ -92,7 +98,8 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
         trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
         log.info("Model state dict saved for Siamese model with contrastive loss")
     else:
-        trainer.save_checkpoint(f"model_weights_{type(lightning_model_wrapper.model).__name__}.pt", weights_only=True)
+        trainer.save_checkpoint(
+            f"model_weights_{type(lightning_model_wrapper.model).__name__}.pt", weights_only=True)
         log.info(f"Model state dict saved for {type(lightning_model_wrapper.model).__name__}")
 
 
