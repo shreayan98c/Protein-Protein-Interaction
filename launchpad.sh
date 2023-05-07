@@ -14,7 +14,7 @@ export TRANSFORMERS_CACHE=/scratch4/danielk/schaud31
 
 #init virtual environment if needed
 #conda remove -n ppi_pred --all
-conda create -n ppi_pred python=3.9
+#conda create -n ppi_pred python=3.9
 
 conda activate ppi_pred # open the Python environment
 
@@ -23,7 +23,7 @@ conda config --set allow_conda_downgrades true
 #clear cache
 pip cache purge
 
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+#conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 pip install pandas==1.4.4
 
