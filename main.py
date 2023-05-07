@@ -55,18 +55,18 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     test_dataloader = DataLoader(test_dataset, batch_size=batch_size, drop_last=True, shuffle=False)
 
     # Lightning class wraps pytorch model for easier reproducibility
-    simple_cross_attention_model = SelfThenCrossAttentionModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN)
+    # simple_cross_attention_model = SelfThenCrossAttentionModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN)
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
-    lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
+    # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
 
-    pretrain = False
+    pretrain = True
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
-    # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
+    lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
     # lightning_model_wrapper = LitContrastiveClassifier()
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="self_then_cross_attention_run")
+    wandb_logger = WandbLogger(project="PPI", name="siamese_net_pretrain")
 
     # Define a trainer and fit using it
     # trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
