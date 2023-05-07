@@ -242,17 +242,13 @@ class SiameseNetworkPretrainer(nn.Module):
 
 class SiameseNetworkClassification(nn.Module):
     def __init__(self):
+        from PPI_Pred.utils import LitContrastivePretrainer
         super(SiameseNetworkClassification, self).__init__()
 
-        self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
-        weights = torch.load("siamese_pretrained.pt")
-        print(weights.keys())
-        1/0
-        self.pretrained_model.load_state_dict(torch.load("siamese_pretrained.pt")[''])
-        # self.pretrained_model = torch.load("siamese_pretrained.pt")
-        print('Loaded the pretrained model trained on Contrastive Loss')
+        pt_model = LitContrastivePretrainer.load_from_checkpoint("siamese_pretrained.pt")
+        self.pretrained_model = pt_model.model
         self.pretrained_model.eval()
-        1/0
+        print('Loaded the pretrained model trained on Contrastive Loss')
 
         # Freeze the weights of the SiameseNet model
         for param in self.pretrained_model.parameters():

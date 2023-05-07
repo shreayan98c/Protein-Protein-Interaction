@@ -62,7 +62,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     pretrain = False
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
-    lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
+    # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
     lightning_model_wrapper = LitContrastiveClassifier()
 
     # Define WandB logger for experiment tracking
