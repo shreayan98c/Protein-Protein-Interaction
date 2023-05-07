@@ -34,4 +34,4 @@ conda config --set allow_conda_downgrades false
 #huggingface-cli delete-cache
 
 #runs your code
-srun python main.py train --batch-size 16 --epochs 1 --lr 1e-4 --small_subset True
+srun python main.py train --batch-size 8 --epochs 1 --lr 1e-4 --small_subset True
