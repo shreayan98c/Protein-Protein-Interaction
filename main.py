@@ -1,3 +1,4 @@
+import os
 import click
 import logging
 import transformers
@@ -60,7 +61,6 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
 
-    pretrain = True
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
     # lightning_model_wrapper = LitContrastiveClassifier()
@@ -69,12 +69,14 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     wandb_logger = WandbLogger(project="PPI", name="siamese_net_pretrain")
 
     # Define a trainer and fit using it
-    # trainer = pl.Trainer(max_epochs=1000, logger=wandb_logger)
-    # trainer.fit(model=lightning_model_wrapper, train_dataloaders=train_dataloader,
-    #             val_dataloaders=validation_dataloader)
-
-    # Define a trainer and fit using it
     trainer = pl.Trainer(max_epochs=epochs, logger=wandb_logger)
+
+    # if there is a saved checkpoint, place the checkpoint file in the same directory as this file
+    # rename the checkpoint file to checkpoint.ckpt so that the trainer can resume from the checkpoint
+    if os.path.exists("checkpoint.ckpt"):
+        trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
+        log.info("Found existing checkpoint.ckpt, resuming training")
+
     trainer.fit(model=lightning_model_wrapper,
                 train_dataloaders=train_dataloader,
                 val_dataloaders=validation_dataloader)
@@ -82,43 +84,12 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
-    trainer.save_checkpoint("model_weights.pt", weights_only=True)
-
-    if pretrain:
+    if isinstance(lightning_model_wrapper.model, SiameseNetworkPretrainer):
         trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
         log.info("Model state dict saved for Siamese model with contrastive loss")
-
-    # model = SimpleLinearModel(max_len=MAX_LEN, hidden_layers=[50, 25, 3, 1], dropout=0.5)
-    # pretrain = True
-    # model = SiameseNetwork(d=MAX_LEN, pretrain=pretrain)
-
-    # train_simple_linear_model(
-    #     model=model,
-    #     train_loader=train_dataloader,
-    #     test_loader=test_dataloader,
-    #     epochs=epochs,
-    #     lr=lr,
-    #     logging_interval=log_interval,
-    # )
-    # train_siamese_model(
-    #     model=model,
-    #     pretrain=pretrain,
-    #     train_loader=train_dataloader,
-    #     test_loader=test_dataloader,
-    #     epochs=epochs,
-    #     lr=lr,
-    #     logging_interval=log_interval,
-    # )
-    # classification_model = SiameseNetworkClassification()
-    #
-    # train_siamese_classification_model(
-    #         model=classification_model,
-    #         train_loader=train_dataloader,
-    #         test_loader=test_dataloader,
-    #         epochs=epochs,
-    #         lr=lr,
-    #         logging_interval=log_interval,
-    # )
+    else:
+        trainer.save_checkpoint(f"model_weights_{type(lightning_model_wrapper.model).__name__}.pt", weights_only=True)
+        log.info(f"Model state dict saved for {type(lightning_model_wrapper.model).__name__}")
 
 
 if __name__ == "__main__":
