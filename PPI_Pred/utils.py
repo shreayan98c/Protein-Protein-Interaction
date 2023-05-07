@@ -8,7 +8,7 @@ from rich.progress import track
 from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork  # , SiameseNetworkClassification
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
 
 log = logging.getLogger(__name__)
 
@@ -165,11 +165,10 @@ class LitContrastivePretrainer(pl.LightningModule):
 
 
 class LitContrastiveClassifier(pl.LightningModule):
-    def __init__(self, model):
+    def __init__(self):
         super().__init__()
-        self.model = model
         self.criterion = nn.BCELoss()
-        # self.classification_model = SiameseNetworkClassification()
+        self.classification_model = SiameseNetworkClassification()
         # declare metrics to track
         self.train_acc = torchmetrics.classification.BinaryAccuracy()
         self.val_acc = torchmetrics.classification.BinaryAccuracy()

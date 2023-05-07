@@ -3,7 +3,7 @@ import logging
 import transformers
 from PPI_Pred.utils import *
 from PPI_Pred.dataset import HuRIDataset
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkPretrainer  # , SiameseNetworkClassification
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkPretrainer, SiameseNetworkClassification
 from PPI_Pred.CrossAttentionModel import *
 from PPI_Pred.self_attention import *
 from rich.logging import RichHandler
@@ -63,7 +63,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     pretrain = False
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
-    # lightning_model_wrapper = LitContrastiveClassifier(SiameseNetwork(d=MAX_LEN, pretrain=pretrain))
+    lightning_model_wrapper = LitContrastiveClassifier()
 
     # Define WandB logger for experiment tracking
     wandb_logger = WandbLogger(project="PPI", name="self_then_cross_attention_run")

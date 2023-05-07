@@ -240,40 +240,44 @@ class SiameseNetworkPretrainer(nn.Module):
         return output1, output2
 
 
-# class SiameseNetworkClassification(nn.Module):
-#     def __init__(self):
-#         super(SiameseNetworkClassification, self).__init__()
-#
-#         # self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
-#         # self.pretrained_model.load_state_dict(torch.load("siamese_pretrained_state_dict.pt"))
-#         self.pretrained_model = torch.load("siamese_pretrained.pt")
-#         print('Loaded the pretrained model trained on Contrastive Loss')
-#         self.pretrained_model.eval()
-#
-#         # Freeze the weights of the SiameseNet model
-#         for param in self.pretrained_model.parameters():
-#             param.requires_grad = False
-#
-#         self.relu1 = nn.ReLU()
-#         self.relu2 = nn.ReLU()
-#         self.dropout1 = nn.Dropout(p=0.5)
-#         self.dropout2 = nn.Dropout(p=0.5)
-#
-#         self.fc1 = nn.Linear(in_features=64, out_features=10)
-#         self.fc2 = nn.Linear(in_features=10, out_features=1)
-#         self.sigmoid = nn.Sigmoid()
-#
-#         # weight initialization
-#         torch.nn.init.xavier_uniform(self.fc1.weight)
-#         self.fc1.bias.data.fill_(0.01)
-#         torch.nn.init.xavier_uniform(self.fc2.weight)
-#         self.fc2.bias.data.fill_(0.01)
-#
-#     def forward(self, input1, input2):
-#         output1, output2 = self.pretrained_model(input1, input2)
-#         diff = torch.abs(output1 - output2)
-#         output = self.dropout1(self.relu1(self.fc1(diff)))
-#         output = self.dropout2(self.relu2(self.fc2(output)))
-#         output = self.sigmoid(output)
-#
-#         return output
+class SiameseNetworkClassification(nn.Module):
+    def __init__(self):
+        super(SiameseNetworkClassification, self).__init__()
+
+        self.pretrained_model = SiameseNetwork(d=500, pretrain=True)
+        weights = torch.load("siamese_pretrained.pt")
+        print(weights.keys())
+        1/0
+        self.pretrained_model.load_state_dict(torch.load("siamese_pretrained.pt")[''])
+        # self.pretrained_model = torch.load("siamese_pretrained.pt")
+        print('Loaded the pretrained model trained on Contrastive Loss')
+        self.pretrained_model.eval()
+        1/0
+
+        # Freeze the weights of the SiameseNet model
+        for param in self.pretrained_model.parameters():
+            param.requires_grad = False
+
+        self.relu1 = nn.ReLU()
+        self.relu2 = nn.ReLU()
+        self.dropout1 = nn.Dropout(p=0.5)
+        self.dropout2 = nn.Dropout(p=0.5)
+
+        self.fc1 = nn.Linear(in_features=64, out_features=10)
+        self.fc2 = nn.Linear(in_features=10, out_features=1)
+        self.sigmoid = nn.Sigmoid()
+
+        # weight initialization
+        torch.nn.init.xavier_uniform(self.fc1.weight)
+        self.fc1.bias.data.fill_(0.01)
+        torch.nn.init.xavier_uniform(self.fc2.weight)
+        self.fc2.bias.data.fill_(0.01)
+
+    def forward(self, input1, input2):
+        output1, output2 = self.pretrained_model(input1, input2)
+        diff = torch.abs(output1 - output2)
+        output = self.dropout1(self.relu1(self.fc1(diff)))
+        output = self.dropout2(self.relu2(self.fc2(output)))
+        output = self.sigmoid(output)
+
+        return output
