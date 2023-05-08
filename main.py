@@ -71,13 +71,13 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # lightning_model_wrapper = LitContrastiveClassifier()
 
     # final model run wrappers
-    # lightning_model_wrapper = LitContrastivePretrainer(CL_AttentionModel(embed_dim=320, num_heads=5,
-    #                                                                      ff_dim=20, seq_len=MAX_LEN))
-    lightning_model_wrapper = LitContrastivePretrainer(CL_Attention_ConvModel(embed_dim=64, num_heads=8,
-                                                                              ff_dim=20, seq_len=62, conv_dim=320))
+    lightning_model_wrapper = LitContrastivePretrainer(CL_AttentionModel(embed_dim=320, num_heads=5,
+                                                                         ff_dim=20, seq_len=MAX_LEN))
+    # lightning_model_wrapper = LitContrastivePretrainer(CL_Attention_ConvModel(embed_dim=64, num_heads=8,
+    #                                                                           ff_dim=20, seq_len=62, conv_dim=320))
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="CL_Attention_ConvModel")
+    wandb_logger = WandbLogger(project="PPI", name="CL_AttentionModel")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
