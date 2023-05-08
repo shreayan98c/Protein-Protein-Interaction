@@ -101,15 +101,15 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
-    if isinstance(lightning_model_wrapper.model, CL_AttentionModel):
+    if hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, CL_AttentionModel):
         trainer.save_checkpoint("cl_attention_model.pt", weights_only=True)
         log.info("Model state dict saved for CL Attention model")
 
-    elif isinstance(lightning_model_wrapper.model, CL_Attention_ConvModel):
+    elif hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, CL_Attention_ConvModel):
         trainer.save_checkpoint("siamese_attention_model.pt", weights_only=True)
         log.info("Model state dict saved for Siamese Attention model")
 
-    elif isinstance(lightning_model_wrapper.model, SiameseNetworkPretrainer):
+    elif hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, SiameseNetworkPretrainer):
         trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
         log.info("Model state dict saved for Siamese model with contrastive loss")
 
