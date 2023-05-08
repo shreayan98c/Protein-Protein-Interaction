@@ -115,8 +115,8 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     else:
         trainer.save_checkpoint(
-            f"model_weights_{type(lightning_model_wrapper.model).__name__}.pt", weights_only=True)
-        log.info(f"Model state dict saved for {type(lightning_model_wrapper.model).__name__}")
+            f"model_weights_{type(lightning_model_wrapper).__name__}.pt", weights_only=True)
+        log.info(f"Model state dict saved for {type(lightning_model_wrapper).__name__}")
 
 
 if __name__ == "__main__":
