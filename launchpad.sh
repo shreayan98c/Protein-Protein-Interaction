@@ -18,17 +18,17 @@ export TRANSFORMERS_CACHE=/scratch4/danielk/schaud31
 
 conda activate ppi_pred # open the Python environment
 
-conda config --set allow_conda_downgrades true
+#conda config --set allow_conda_downgrades true
 
 #clear cache
-pip cache purge
+#pip cache purge
 
 #conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
-pip install -r requirements.txt
-pip install pandas==1.4.4
+#pip install -r requirements.txt
+#pip install pandas==1.4.4
 
-conda config --set allow_conda_downgrades false
+#conda config --set allow_conda_downgrades false
 #conda list
 
 #runs your code
-srun python main.py train --batch-size 16 --epochs 2 --lr 1e-4 --small_subset True
+srun python main.py train --batch-size 8 --epochs 10 --lr 1e-4 --small_subset False
