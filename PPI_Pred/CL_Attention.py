@@ -39,6 +39,42 @@ class CL_AttentionModel(nn.Module):
         cross_out_2 = self.cross_attention_2(self_out_2, self_out_1)
 
         return cross_out_1, cross_out_2
+    
+class CL_AttentionModelClassification(nn.Module):
+    def __init__(self, embed_dim, seq_len):
+        from PPI_Pred.utils import LitContrastivePretrainer
+        super(CL_AttentionModelClassification, self).__init__()
+
+        pt_model = LitContrastivePretrainer.load_from_checkpoint("cl_attention_model.ckpt")
+        self.pretrained_model = pt_model.model
+        self.pretrained_model.eval()
+        print('Loaded the pretrained model trained on Contrastive Loss')
+
+        # Freeze the weights of the pretrained model
+        for param in self.pretrained_model.parameters():
+            param.requires_grad = False
+
+        self.ff_out = nn.Linear(2 * embed_dim * seq_len, 1)
+        self.sigmoid = nn.Sigmoid()
+
+        # weight initialization
+        torch.nn.init.xavier_uniform(self.ff_out.weight)
+        self.fc1.bias.data.fill_(0.01)
+
+    def forward(self, input1, input2):
+        
+        out1, out2 = self.pretrained_model(input1, input2)
+
+        # Flatten and concatenate outputs
+        out1 = torch.flatten(out1, 1)
+        out2 = torch.flatten(out2, 1)
+
+        cat_output = torch.cat((out1, out2), 1)
+
+        # Pass through final feed forward layer and activation
+        ff_out = self.ff_out(cat_output)
+        
+        return self.sigmoid(ff_out)
 
 
 class CL_Attention_ConvModel(nn.Module):
