@@ -45,7 +45,7 @@ class CL_AttentionModelClassification(nn.Module):
         from PPI_Pred.utils import LitContrastivePretrainer
         super(CL_AttentionModelClassification, self).__init__()
 
-        pt_model = LitContrastivePretrainer.load_from_checkpoint("cl_attention_model.ckpt")
+        pt_model = LitContrastivePretrainer(CL_AttentionModel(embed_dim, num_heads, ff_dim, seq_len)).load_from_checkpoint("cl_attention_model.ckpt")
         self.pretrained_model = pt_model.model
         self.pretrained_model.eval()
         print('Loaded the pretrained model trained on Contrastive Loss')
