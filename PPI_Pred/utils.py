@@ -167,7 +167,7 @@ class LitContrastiveClassifier(pl.LightningModule):
     def __init__(self, model):
         super().__init__()
         self.criterion = nn.BCELoss()
-        self.classification_model = model
+        self.model = model
         # declare metrics to track
         self.train_acc = torchmetrics.classification.BinaryAccuracy()
         self.val_acc = torchmetrics.classification.BinaryAccuracy()
@@ -179,7 +179,7 @@ class LitContrastiveClassifier(pl.LightningModule):
         # it is independent of forward
         seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
         target = target.unsqueeze(1).float()
-        output = self.classification_model(seq1, seq2)
+        output = self.model(seq1, seq2)
         loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.train_acc(predicted, target)
@@ -191,7 +191,7 @@ class LitContrastiveClassifier(pl.LightningModule):
     def validation_step(self, batch, batch_idx):
         seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
         target = target.unsqueeze(1).float()
-        output = self.classification_model(seq1, seq2)
+        output = self.model(seq1, seq2)
         val_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.val_acc(predicted, target)
@@ -206,7 +206,7 @@ class LitContrastiveClassifier(pl.LightningModule):
     def test_step(self, batch, batch_idx):
         seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq2_encoded'].float(), batch['label']
         target = target.unsqueeze(1).float()
-        output = self.classification_model(seq1, seq2)
+        output = self.model(seq1, seq2)
         test_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.test_acc(predicted, target)
