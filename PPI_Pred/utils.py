@@ -164,10 +164,10 @@ class LitContrastivePretrainer(pl.LightningModule):
 
 
 class LitContrastiveClassifier(pl.LightningModule):
-    def __init__(self):
+    def __init__(self, model):
         super().__init__()
         self.criterion = nn.BCELoss()
-        self.classification_model = SiameseNetworkClassification()
+        self.classification_model = model
         # declare metrics to track
         self.train_acc = torchmetrics.classification.BinaryAccuracy()
         self.val_acc = torchmetrics.classification.BinaryAccuracy()

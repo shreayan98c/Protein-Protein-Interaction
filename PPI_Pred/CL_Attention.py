@@ -41,7 +41,7 @@ class CL_AttentionModel(nn.Module):
         return cross_out_1, cross_out_2
     
 class CL_AttentionModelClassification(nn.Module):
-    def __init__(self, embed_dim, seq_len):
+    def __init__(self, embed_dim, num_heads, ff_dim, seq_len):
         from PPI_Pred.utils import LitContrastivePretrainer
         super(CL_AttentionModelClassification, self).__init__()
 
@@ -59,7 +59,7 @@ class CL_AttentionModelClassification(nn.Module):
 
         # weight initialization
         torch.nn.init.xavier_uniform(self.ff_out.weight)
-        self.fc1.bias.data.fill_(0.01)
+        self.ff_out.bias.data.fill_(0.01)
 
     def forward(self, input1, input2):
         
