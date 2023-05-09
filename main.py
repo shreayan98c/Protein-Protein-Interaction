@@ -66,9 +66,9 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
 
-    # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
+    lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
-    lightning_model_wrapper = LitNonContrastiveClassifier(CL_AttentionModelClassification(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN), split=True)
+    # lightning_model_wrapper = LitNonContrastiveClassifier(CL_AttentionModelClassification(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN), split=True)
 
     # final model run wrappers
     # lightning_model_wrapper = LitContrastivePretrainer(CL_AttentionModel(embed_dim=320, num_heads=5,
@@ -77,7 +77,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #                                                                           ff_dim=20, seq_len=62, conv_dim=320))
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="CL_Attention_Tuning")
+    wandb_logger = WandbLogger(project="PPI", name="Siamese_CNN_MLP")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
