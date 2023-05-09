@@ -59,7 +59,7 @@ class CL_AttentionModelClassification(nn.Module):
 
         # weight initialization
         torch.nn.init.xavier_uniform(self.ff_out.weight)
-        self.fc1.bias.data.fill_(0.01)
+        self.ff_out.bias.data.fill_(0.01)
 
     def forward(self, input1, input2):
         
