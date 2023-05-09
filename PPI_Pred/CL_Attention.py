@@ -180,7 +180,7 @@ class CL_Attention_ConvModel(nn.Module):
 
 class Conv_block(nn.Module):
 
-        def __init__(self, embed_dim, num_heads, ff_dim, seq_len, conv_dim):
+    def __init__(self, embed_dim, num_heads, ff_dim, seq_len, conv_dim):
         """
         Instantiation for the convolution blocks
         """

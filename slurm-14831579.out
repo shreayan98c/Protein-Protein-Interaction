@@ -1,0 +1,494 @@
+[23:11:49] DEBUG    Starting new HTTPS connection (1):    connectionpool.py:1048
+                    huggingface.co:443                                          
+[23:11:50] DEBUG    https://huggingface.co:443 "HEAD       connectionpool.py:546
+                    /facebook/esm2_t6_8M_UR50D/resolve/mai                      
+                    n/vocab.txt HTTP/1.1" 200 0                                 
+           DEBUG    https://huggingface.co:443 "HEAD       connectionpool.py:546
+                    /facebook/esm2_t6_8M_UR50D/resolve/mai                      
+                    n/config.json HTTP/1.1" 200 0                               
+Some weights of the model checkpoint at facebook/esm2_t6_8M_UR50D were not used when initializing EsmModel: ['lm_head.layer_norm.weight', 'lm_head.dense.weight', 'esm.contact_head.regression.bias', 'lm_head.bias', 'lm_head.layer_norm.bias', 'esm.contact_head.regression.weight', 'lm_head.decoder.weight', 'lm_head.dense.bias']
+- This IS expected if you are initializing EsmModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing EsmModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of EsmModel were not initialized from the model checkpoint at facebook/esm2_t6_8M_UR50D and are newly initialized: ['esm.pooler.dense.bias', 'esm.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Found local copy...
+Loading...
+Done!
+Found local copy...
+Loading...
+Done!
+Found local copy...
+Loading...
+Done!
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('A100-PCIE-40GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name      | Type              | Params
+------------------------------------------------
+0 | model     | CL_AttentionModel | 3.3 M 
+1 | criterion | ContrastiveLoss   | 0     
+------------------------------------------------
+3.3 M     Trainable params
+0         Non-trainable params
+3.3 M     Total params
+13.005    Total estimated model params size (MB)
+[23:12:05] DEBUG    Failed checking if running in CYGWIN due to:     util.py:405
+                    FileNotFoundError(2, 'No such file or                       
+                    directory')                                                 
+           DEBUG    Popen(['git', 'rev-parse', '--show-toplevel'],    cmd.py:976
+                    cwd=/scratch4/jgray21/jchen291/Protein-Protein-In           
+                    teraction, universal_newlines=False, shell=None,            
+                    istream=None)                                               
+[23:12:06] DEBUG    Starting new HTTPS connection (1):    connectionpool.py:1048
+                    api.wandb.ai:443                                            
+           DEBUG    https://api.wandb.ai:443 "POST         connectionpool.py:546
+                    /graphql HTTP/1.1" 200 None                                 
+           DEBUG    https://api.wandb.ai:443 "POST         connectionpool.py:546
+                    /graphql HTTP/1.1" 200 None                                 
+wandb: Currently logged in as: jc200108 (jacky291). Use `wandb login --relogin` to force relogin
+           DEBUG    Popen(['git', 'cat-file', '--batch-check'],       cmd.py:976
+                    cwd=/scratch4/jgray21/jchen291/Protein-Protein-In           
+                    teraction, universal_newlines=False, shell=None,            
+                    istream=<valid stream>)                                     
+wandb: wandb version 0.15.2 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.0
+wandb: Run data is saved locally in ./wandb/run-20230507_231206-cqppz7ks
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run CL_AttentionModel
+wandb: ⭐️ View project at https://wandb.ai/jacky291/PPI
+wandb: 🚀 View run at https://wandb.ai/jacky291/PPI/runs/cqppz7ks
+SLURM auto-requeueing enabled. Setting signal handlers.
+Sanity Checking: 0it [00:00, ?it/s]Sanity Checking:   0%|          | 0/2 [00:00<?, ?it/s]Sanity Checking DataLoader 0:   0%|          | 0/2 [00:00<?, ?it/s]Sanity Checking DataLoader 0:  50%|█████     | 1/2 [00:05<00:05,  5.94s/it]Sanity Checking DataLoader 0: 100%|██████████| 2/2 [00:08<00:00,  4.25s/it]                                                                           Training: 0it [00:00, ?it/s]Training:   0%|          | 0/5 [00:00<?, ?it/s]Epoch 0:   0%|          | 0/5 [00:00<?, ?it/s] Epoch 0:  20%|██        | 1/5 [00:03<00:15,  3.79s/it]Epoch 0:  20%|██        | 1/5 [00:03<00:15,  3.79s/it, v_num=z7ks]Epoch 0:  40%|████      | 2/5 [00:07<00:11,  3.76s/it, v_num=z7ks]Epoch 0:  40%|████      | 2/5 [00:07<00:11,  3.76s/it, v_num=z7ks]Epoch 0:  60%|██████    | 3/5 [00:11<00:07,  3.75s/it, v_num=z7ks]Epoch 0:  60%|██████    | 3/5 [00:11<00:07,  3.75s/it, v_num=z7ks]Epoch 0:  80%|████████  | 4/5 [00:14<00:03,  3.73s/it, v_num=z7ks]Epoch 0:  80%|████████  | 4/5 [00:14<00:03,  3.73s/it, v_num=z7ks]Epoch 0: 100%|██████████| 5/5 [00:18<00:00,  3.72s/it, v_num=z7ks]Epoch 0: 100%|██████████| 5/5 [00:18<00:00,  3.72s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 199.86it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.29s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.61s/it][AEpoch 0: 100%|██████████| 5/5 [00:30<00:00,  6.04s/it, v_num=z7ks]
+                                                                      [AEpoch 0: 100%|██████████| 5/5 [00:30<00:00,  6.04s/it, v_num=z7ks][23:12:49] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=0-step=5.ckpt                     
+Epoch 0:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 1:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 1:  20%|██        | 1/5 [00:03<00:15,  3.82s/it, v_num=z7ks]Epoch 1:  20%|██        | 1/5 [00:03<00:15,  3.82s/it, v_num=z7ks]Epoch 1:  40%|████      | 2/5 [00:07<00:11,  3.70s/it, v_num=z7ks]Epoch 1:  40%|████      | 2/5 [00:07<00:11,  3.70s/it, v_num=z7ks]Epoch 1:  60%|██████    | 3/5 [00:10<00:07,  3.66s/it, v_num=z7ks]Epoch 1:  60%|██████    | 3/5 [00:10<00:07,  3.66s/it, v_num=z7ks]Epoch 1:  80%|████████  | 4/5 [00:14<00:03,  3.65s/it, v_num=z7ks]Epoch 1:  80%|████████  | 4/5 [00:14<00:03,  3.65s/it, v_num=z7ks]Epoch 1: 100%|██████████| 5/5 [00:18<00:00,  3.64s/it, v_num=z7ks]Epoch 1: 100%|██████████| 5/5 [00:18<00:00,  3.64s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 183.59it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.09it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.22s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.37s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.47s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.53s/it][AEpoch 1: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks]
+                                                                      [AEpoch 1: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks][23:13:18] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=1-step=10.ckpt                    
+Epoch 1:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 2:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 2:  20%|██        | 1/5 [00:03<00:14,  3.64s/it, v_num=z7ks]Epoch 2:  20%|██        | 1/5 [00:03<00:14,  3.64s/it, v_num=z7ks]Epoch 2:  40%|████      | 2/5 [00:07<00:10,  3.61s/it, v_num=z7ks]Epoch 2:  40%|████      | 2/5 [00:07<00:10,  3.61s/it, v_num=z7ks]Epoch 2:  60%|██████    | 3/5 [00:10<00:07,  3.59s/it, v_num=z7ks]Epoch 2:  60%|██████    | 3/5 [00:10<00:07,  3.59s/it, v_num=z7ks]Epoch 2:  80%|████████  | 4/5 [00:14<00:03,  3.58s/it, v_num=z7ks]Epoch 2:  80%|████████  | 4/5 [00:14<00:03,  3.58s/it, v_num=z7ks]Epoch 2: 100%|██████████| 5/5 [00:17<00:00,  3.58s/it, v_num=z7ks]Epoch 2: 100%|██████████| 5/5 [00:17<00:00,  3.58s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 188.76it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.44s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.53s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 2: 100%|██████████| 5/5 [00:29<00:00,  5.89s/it, v_num=z7ks]
+                                                                      [AEpoch 2: 100%|██████████| 5/5 [00:29<00:00,  5.89s/it, v_num=z7ks][23:13:48] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=2-step=15.ckpt                    
+Epoch 2:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 3:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 3:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 3:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 3:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 3:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 3:  60%|██████    | 3/5 [00:10<00:07,  3.57s/it, v_num=z7ks]Epoch 3:  60%|██████    | 3/5 [00:10<00:07,  3.57s/it, v_num=z7ks]Epoch 3:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 3:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 3: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]Epoch 3: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 186.12it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.43s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.53s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.59s/it][AEpoch 3: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks]
+                                                                      [AEpoch 3: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks][23:14:17] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=3-step=20.ckpt                    
+Epoch 3:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 4:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 4:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 4:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 4:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 4:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 4:  60%|██████    | 3/5 [00:10<00:07,  3.52s/it, v_num=z7ks]Epoch 4:  60%|██████    | 3/5 [00:10<00:07,  3.52s/it, v_num=z7ks]Epoch 4:  80%|████████  | 4/5 [00:14<00:03,  3.51s/it, v_num=z7ks]Epoch 4:  80%|████████  | 4/5 [00:14<00:03,  3.51s/it, v_num=z7ks]Epoch 4: 100%|██████████| 5/5 [00:18<00:00,  3.62s/it, v_num=z7ks]Epoch 4: 100%|██████████| 5/5 [00:18<00:00,  3.62s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 171.55it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.01it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.29s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.61s/it][AEpoch 4: 100%|██████████| 5/5 [00:29<00:00,  5.95s/it, v_num=z7ks]
+                                                                      [AEpoch 4: 100%|██████████| 5/5 [00:29<00:00,  5.95s/it, v_num=z7ks][23:14:47] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=4-step=25.ckpt                    
+Epoch 4:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 5:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 5:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 5:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 5:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 5:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 5:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 5:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 5:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 5:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 5: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]Epoch 5: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 199.78it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.02it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.29s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 5: 100%|██████████| 5/5 [00:29<00:00,  5.87s/it, v_num=z7ks]
+                                                                      [AEpoch 5: 100%|██████████| 5/5 [00:29<00:00,  5.87s/it, v_num=z7ks][23:15:17] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=5-step=30.ckpt                    
+Epoch 5:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 6:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 6:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 6:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 6:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 6:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 6:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 6:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 6:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 6:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 6: 100%|██████████| 5/5 [00:17<00:00,  3.54s/it, v_num=z7ks]Epoch 6: 100%|██████████| 5/5 [00:17<00:00,  3.54s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 201.54it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.01it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.28s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.41s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.50s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.56s/it][AEpoch 6: 100%|██████████| 5/5 [00:28<00:00,  5.78s/it, v_num=z7ks]
+                                                                      [AEpoch 6: 100%|██████████| 5/5 [00:28<00:00,  5.78s/it, v_num=z7ks][23:15:46] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=6-step=35.ckpt                    
+Epoch 6:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 7:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 7:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 7:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 7:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 7:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 7:  60%|██████    | 3/5 [00:10<00:07,  3.57s/it, v_num=z7ks]Epoch 7:  60%|██████    | 3/5 [00:10<00:07,  3.57s/it, v_num=z7ks]Epoch 7:  80%|████████  | 4/5 [00:14<00:03,  3.59s/it, v_num=z7ks]Epoch 7:  80%|████████  | 4/5 [00:14<00:03,  3.59s/it, v_num=z7ks]Epoch 7: 100%|██████████| 5/5 [00:18<00:00,  3.61s/it, v_num=z7ks]Epoch 7: 100%|██████████| 5/5 [00:18<00:00,  3.61s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 195.44it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.00it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.35s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.51s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.60s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.65s/it][AEpoch 7: 100%|██████████| 5/5 [00:29<00:00,  5.99s/it, v_num=z7ks]
+                                                                      [AEpoch 7: 100%|██████████| 5/5 [00:29<00:00,  5.99s/it, v_num=z7ks][23:16:16] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=7-step=40.ckpt                    
+Epoch 7:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 8:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 8:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 8:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 8:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 8:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 8:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 8:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 8:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 8:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 8: 100%|██████████| 5/5 [00:17<00:00,  3.55s/it, v_num=z7ks]Epoch 8: 100%|██████████| 5/5 [00:17<00:00,  3.55s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 198.20it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.30s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.59s/it][AEpoch 8: 100%|██████████| 5/5 [00:29<00:00,  5.85s/it, v_num=z7ks]
+                                                                      [AEpoch 8: 100%|██████████| 5/5 [00:29<00:00,  5.85s/it, v_num=z7ks][23:16:45] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=8-step=45.ckpt                    
+Epoch 8:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 9:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 9:  20%|██        | 1/5 [00:03<00:14,  3.54s/it, v_num=z7ks]Epoch 9:  20%|██        | 1/5 [00:03<00:14,  3.54s/it, v_num=z7ks]Epoch 9:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 9:  40%|████      | 2/5 [00:07<00:10,  3.55s/it, v_num=z7ks]Epoch 9:  60%|██████    | 3/5 [00:10<00:07,  3.52s/it, v_num=z7ks]Epoch 9:  60%|██████    | 3/5 [00:10<00:07,  3.52s/it, v_num=z7ks]Epoch 9:  80%|████████  | 4/5 [00:14<00:03,  3.53s/it, v_num=z7ks]Epoch 9:  80%|████████  | 4/5 [00:14<00:03,  3.53s/it, v_num=z7ks]Epoch 9: 100%|██████████| 5/5 [00:17<00:00,  3.53s/it, v_num=z7ks]Epoch 9: 100%|██████████| 5/5 [00:17<00:00,  3.53s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 183.45it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.30s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 9: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks]
+                                                                      [AEpoch 9: 100%|██████████| 5/5 [00:29<00:00,  5.86s/it, v_num=z7ks][23:17:15] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=9-step=50.ckpt                    
+Epoch 9:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 10:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 10:  20%|██        | 1/5 [00:03<00:14,  3.66s/it, v_num=z7ks]Epoch 10:  20%|██        | 1/5 [00:03<00:14,  3.66s/it, v_num=z7ks]Epoch 10:  40%|████      | 2/5 [00:07<00:10,  3.60s/it, v_num=z7ks]Epoch 10:  40%|████      | 2/5 [00:07<00:10,  3.60s/it, v_num=z7ks]Epoch 10:  60%|██████    | 3/5 [00:10<00:07,  3.58s/it, v_num=z7ks]Epoch 10:  60%|██████    | 3/5 [00:10<00:07,  3.58s/it, v_num=z7ks]Epoch 10:  80%|████████  | 4/5 [00:14<00:03,  3.57s/it, v_num=z7ks]Epoch 10:  80%|████████  | 4/5 [00:14<00:03,  3.57s/it, v_num=z7ks]Epoch 10: 100%|██████████| 5/5 [00:17<00:00,  3.57s/it, v_num=z7ks]Epoch 10: 100%|██████████| 5/5 [00:17<00:00,  3.57s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 201.47it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.06it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.26s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.44s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 10: 100%|██████████| 5/5 [00:29<00:00,  5.88s/it, v_num=z7ks]
+                                                                      [AEpoch 10: 100%|██████████| 5/5 [00:29<00:00,  5.88s/it, v_num=z7ks][23:17:44] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=10-step=55.ckpt                   
+Epoch 10:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 11:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 11:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 11:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 11:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 11:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 11:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 11:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 11:  80%|████████  | 4/5 [00:14<00:03,  3.54s/it, v_num=z7ks]Epoch 11:  80%|████████  | 4/5 [00:14<00:03,  3.54s/it, v_num=z7ks]Epoch 11: 100%|██████████| 5/5 [00:17<00:00,  3.53s/it, v_num=z7ks]Epoch 11: 100%|██████████| 5/5 [00:17<00:00,  3.53s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 178.96it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.08it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.24s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.40s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.50s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.57s/it][AEpoch 11: 100%|██████████| 5/5 [00:29<00:00,  5.80s/it, v_num=z7ks]
+                                                                      [AEpoch 11: 100%|██████████| 5/5 [00:29<00:00,  5.80s/it, v_num=z7ks][23:18:13] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=11-step=60.ckpt                   
+Epoch 11:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 12:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 12:  20%|██        | 1/5 [00:03<00:14,  3.56s/it, v_num=z7ks]Epoch 12:  20%|██        | 1/5 [00:03<00:14,  3.56s/it, v_num=z7ks]Epoch 12:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 12:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 12:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 12:  60%|██████    | 3/5 [00:10<00:07,  3.55s/it, v_num=z7ks]Epoch 12:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 12:  80%|████████  | 4/5 [00:14<00:03,  3.56s/it, v_num=z7ks]Epoch 12: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]Epoch 12: 100%|██████████| 5/5 [00:17<00:00,  3.56s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 190.75it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.53s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 12: 100%|██████████| 5/5 [00:29<00:00,  5.87s/it, v_num=z7ks]
+                                                                      [AEpoch 12: 100%|██████████| 5/5 [00:29<00:00,  5.87s/it, v_num=z7ks][23:18:43] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=12-step=65.ckpt                   
+Epoch 12:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 13:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 13:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 13:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 13:  40%|████      | 2/5 [00:07<00:10,  3.58s/it, v_num=z7ks]Epoch 13:  40%|████      | 2/5 [00:07<00:10,  3.58s/it, v_num=z7ks]Epoch 13:  60%|██████    | 3/5 [00:10<00:07,  3.56s/it, v_num=z7ks]Epoch 13:  60%|██████    | 3/5 [00:10<00:07,  3.56s/it, v_num=z7ks]Epoch 13:  80%|████████  | 4/5 [00:14<00:03,  3.55s/it, v_num=z7ks]Epoch 13:  80%|████████  | 4/5 [00:14<00:03,  3.55s/it, v_num=z7ks]Epoch 13: 100%|██████████| 5/5 [00:17<00:00,  3.55s/it, v_num=z7ks]Epoch 13: 100%|██████████| 5/5 [00:17<00:00,  3.55s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 197.66it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.53s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.68s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.70s/it][AEpoch 13: 100%|██████████| 5/5 [00:29<00:00,  5.98s/it, v_num=z7ks]
+                                                                      [AEpoch 13: 100%|██████████| 5/5 [00:29<00:00,  5.98s/it, v_num=z7ks][23:19:13] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=13-step=70.ckpt                   
+Epoch 13:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 14:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 14:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 14:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 14:  40%|████      | 2/5 [00:07<00:11,  3.97s/it, v_num=z7ks]Epoch 14:  40%|████      | 2/5 [00:07<00:11,  3.97s/it, v_num=z7ks]Epoch 14:  60%|██████    | 3/5 [00:11<00:07,  3.92s/it, v_num=z7ks]Epoch 14:  60%|██████    | 3/5 [00:11<00:07,  3.92s/it, v_num=z7ks]Epoch 14:  80%|████████  | 4/5 [00:15<00:03,  3.83s/it, v_num=z7ks]Epoch 14:  80%|████████  | 4/5 [00:15<00:03,  3.83s/it, v_num=z7ks]Epoch 14: 100%|██████████| 5/5 [00:18<00:00,  3.77s/it, v_num=z7ks]Epoch 14: 100%|██████████| 5/5 [00:18<00:00,  3.77s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 203.41it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.28s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.48s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.56s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.67s/it][AEpoch 14: 100%|██████████| 5/5 [00:30<00:00,  6.17s/it, v_num=z7ks]
+                                                                      [AEpoch 14: 100%|██████████| 5/5 [00:30<00:00,  6.17s/it, v_num=z7ks][23:19:44] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=14-step=75.ckpt                   
+Epoch 14:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 15:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 15:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 15:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 15:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 15:  40%|████      | 2/5 [00:07<00:10,  3.53s/it, v_num=z7ks]Epoch 15:  60%|██████    | 3/5 [00:10<00:07,  3.54s/it, v_num=z7ks]Epoch 15:  60%|██████    | 3/5 [00:10<00:07,  3.54s/it, v_num=z7ks]Epoch 15:  80%|████████  | 4/5 [00:14<00:03,  3.54s/it, v_num=z7ks]Epoch 15:  80%|████████  | 4/5 [00:14<00:03,  3.54s/it, v_num=z7ks]Epoch 15: 100%|██████████| 5/5 [00:19<00:00,  3.81s/it, v_num=z7ks]Epoch 15: 100%|██████████| 5/5 [00:19<00:00,  3.81s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 197.91it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.28s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 15: 100%|██████████| 5/5 [00:30<00:00,  6.12s/it, v_num=z7ks]
+                                                                      [AEpoch 15: 100%|██████████| 5/5 [00:30<00:00,  6.12s/it, v_num=z7ks][23:20:15] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=15-step=80.ckpt                   
+Epoch 15:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 16:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 16:  20%|██        | 1/5 [00:03<00:14,  3.61s/it, v_num=z7ks]Epoch 16:  20%|██        | 1/5 [00:03<00:14,  3.61s/it, v_num=z7ks]Epoch 16:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 16:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 16:  60%|██████    | 3/5 [00:10<00:07,  3.54s/it, v_num=z7ks]Epoch 16:  60%|██████    | 3/5 [00:10<00:07,  3.54s/it, v_num=z7ks]Epoch 16:  80%|████████  | 4/5 [00:14<00:03,  3.71s/it, v_num=z7ks]Epoch 16:  80%|████████  | 4/5 [00:14<00:03,  3.71s/it, v_num=z7ks]Epoch 16: 100%|██████████| 5/5 [00:18<00:00,  3.66s/it, v_num=z7ks]Epoch 16: 100%|██████████| 5/5 [00:18<00:00,  3.66s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 207.02it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.28s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 16: 100%|██████████| 5/5 [00:29<00:00,  5.95s/it, v_num=z7ks]
+                                                                      [AEpoch 16: 100%|██████████| 5/5 [00:29<00:00,  5.95s/it, v_num=z7ks][23:20:45] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=16-step=85.ckpt                   
+Epoch 16:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 17:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 17:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 17:  20%|██        | 1/5 [00:03<00:14,  3.55s/it, v_num=z7ks]Epoch 17:  40%|████      | 2/5 [00:08<00:12,  4.17s/it, v_num=z7ks]Epoch 17:  40%|████      | 2/5 [00:08<00:12,  4.17s/it, v_num=z7ks]Epoch 17:  60%|██████    | 3/5 [00:11<00:07,  3.97s/it, v_num=z7ks]Epoch 17:  60%|██████    | 3/5 [00:11<00:07,  3.97s/it, v_num=z7ks]Epoch 17:  80%|████████  | 4/5 [00:15<00:03,  3.84s/it, v_num=z7ks]Epoch 17:  80%|████████  | 4/5 [00:15<00:03,  3.84s/it, v_num=z7ks]Epoch 17: 100%|██████████| 5/5 [00:18<00:00,  3.74s/it, v_num=z7ks]Epoch 17: 100%|██████████| 5/5 [00:18<00:00,  3.74s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 203.24it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.16it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.16s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.30s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:06<00:01,  1.39s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:08<00:00,  1.45s/it][AEpoch 17: 100%|██████████| 5/5 [00:29<00:00,  5.82s/it, v_num=z7ks]
+                                                                      [AEpoch 17: 100%|██████████| 5/5 [00:29<00:00,  5.82s/it, v_num=z7ks][23:21:14] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=17-step=90.ckpt                   
+Epoch 17:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 18:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 18:  20%|██        | 1/5 [00:03<00:13,  3.35s/it, v_num=z7ks]Epoch 18:  20%|██        | 1/5 [00:03<00:13,  3.35s/it, v_num=z7ks]Epoch 18:  40%|████      | 2/5 [00:06<00:10,  3.36s/it, v_num=z7ks]Epoch 18:  40%|████      | 2/5 [00:06<00:10,  3.36s/it, v_num=z7ks]Epoch 18:  60%|██████    | 3/5 [00:10<00:06,  3.37s/it, v_num=z7ks]Epoch 18:  60%|██████    | 3/5 [00:10<00:06,  3.37s/it, v_num=z7ks]Epoch 18:  80%|████████  | 4/5 [00:14<00:03,  3.72s/it, v_num=z7ks]Epoch 18:  80%|████████  | 4/5 [00:14<00:03,  3.72s/it, v_num=z7ks]Epoch 18: 100%|██████████| 5/5 [00:18<00:00,  3.67s/it, v_num=z7ks]Epoch 18: 100%|██████████| 5/5 [00:18<00:00,  3.67s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 202.40it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:05<00:11,  2.75s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:07<00:07,  2.47s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:09<00:04,  2.30s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:11<00:02,  2.21s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:12<00:00,  2.16s/it][AEpoch 18: 100%|██████████| 5/5 [00:33<00:00,  6.63s/it, v_num=z7ks]
+                                                                      [AEpoch 18: 100%|██████████| 5/5 [00:33<00:00,  6.63s/it, v_num=z7ks][23:21:47] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=18-step=95.ckpt                   
+Epoch 18:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 19:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 19:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 19:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 19:  40%|████      | 2/5 [00:07<00:10,  3.59s/it, v_num=z7ks]Epoch 19:  40%|████      | 2/5 [00:07<00:10,  3.59s/it, v_num=z7ks]Epoch 19:  60%|██████    | 3/5 [00:10<00:07,  3.64s/it, v_num=z7ks]Epoch 19:  60%|██████    | 3/5 [00:10<00:07,  3.64s/it, v_num=z7ks]Epoch 19:  80%|████████  | 4/5 [00:14<00:03,  3.65s/it, v_num=z7ks]Epoch 19:  80%|████████  | 4/5 [00:14<00:03,  3.65s/it, v_num=z7ks]Epoch 19: 100%|██████████| 5/5 [00:18<00:00,  3.65s/it, v_num=z7ks]Epoch 19: 100%|██████████| 5/5 [00:18<00:00,  3.65s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 190.43it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.02it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.33s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.50s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.60s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.65s/it][AEpoch 19: 100%|██████████| 5/5 [00:30<00:00,  6.02s/it, v_num=z7ks]
+                                                                      [AEpoch 19: 100%|██████████| 5/5 [00:30<00:00,  6.02s/it, v_num=z7ks][23:22:17] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=19-step=100.ckpt                  
+Epoch 19:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 20:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 20:  20%|██        | 1/5 [00:03<00:14,  3.69s/it, v_num=z7ks]Epoch 20:  20%|██        | 1/5 [00:03<00:14,  3.69s/it, v_num=z7ks]Epoch 20:  40%|████      | 2/5 [00:07<00:11,  3.68s/it, v_num=z7ks]Epoch 20:  40%|████      | 2/5 [00:07<00:11,  3.68s/it, v_num=z7ks]Epoch 20:  60%|██████    | 3/5 [00:11<00:07,  3.76s/it, v_num=z7ks]Epoch 20:  60%|██████    | 3/5 [00:11<00:07,  3.76s/it, v_num=z7ks]Epoch 20:  80%|████████  | 4/5 [00:14<00:03,  3.73s/it, v_num=z7ks]Epoch 20:  80%|████████  | 4/5 [00:14<00:03,  3.73s/it, v_num=z7ks]Epoch 20: 100%|██████████| 5/5 [00:18<00:00,  3.71s/it, v_num=z7ks]Epoch 20: 100%|██████████| 5/5 [00:18<00:00,  3.71s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 187.35it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:02<00:04,  1.00s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.36s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.52s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.62s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.69s/it][AEpoch 20: 100%|██████████| 5/5 [00:30<00:00,  6.14s/it, v_num=z7ks]
+                                                                      [AEpoch 20: 100%|██████████| 5/5 [00:30<00:00,  6.14s/it, v_num=z7ks][23:22:48] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=20-step=105.ckpt                  
+Epoch 20:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 21:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 21:  20%|██        | 1/5 [00:03<00:15,  3.79s/it, v_num=z7ks]Epoch 21:  20%|██        | 1/5 [00:03<00:15,  3.79s/it, v_num=z7ks]Epoch 21:  40%|████      | 2/5 [00:07<00:11,  3.67s/it, v_num=z7ks]Epoch 21:  40%|████      | 2/5 [00:07<00:11,  3.67s/it, v_num=z7ks]Epoch 21:  60%|██████    | 3/5 [00:10<00:07,  3.65s/it, v_num=z7ks]Epoch 21:  60%|██████    | 3/5 [00:10<00:07,  3.65s/it, v_num=z7ks]Epoch 21:  80%|████████  | 4/5 [00:14<00:03,  3.63s/it, v_num=z7ks]Epoch 21:  80%|████████  | 4/5 [00:14<00:03,  3.63s/it, v_num=z7ks]Epoch 21: 100%|██████████| 5/5 [00:18<00:00,  3.62s/it, v_num=z7ks]Epoch 21: 100%|██████████| 5/5 [00:18<00:00,  3.62s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 187.50it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:02<00:04,  1.17s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.43s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.57s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.64s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.70s/it][AEpoch 21: 100%|██████████| 5/5 [00:30<00:00,  6.06s/it, v_num=z7ks]
+                                                                      [AEpoch 21: 100%|██████████| 5/5 [00:30<00:00,  6.06s/it, v_num=z7ks][23:23:19] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=21-step=110.ckpt                  
+Epoch 21:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 22:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 22:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 22:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 22:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 22:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 22:  60%|██████    | 3/5 [00:10<00:07,  3.59s/it, v_num=z7ks]Epoch 22:  60%|██████    | 3/5 [00:10<00:07,  3.59s/it, v_num=z7ks]Epoch 22:  80%|████████  | 4/5 [00:14<00:03,  3.60s/it, v_num=z7ks]Epoch 22:  80%|████████  | 4/5 [00:14<00:03,  3.60s/it, v_num=z7ks]Epoch 22: 100%|██████████| 5/5 [00:18<00:00,  3.61s/it, v_num=z7ks]Epoch 22: 100%|██████████| 5/5 [00:18<00:00,  3.61s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 179.83it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:02<00:04,  1.12s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.41s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.57s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.67s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.73s/it][AEpoch 22: 100%|██████████| 5/5 [00:30<00:00,  6.10s/it, v_num=z7ks]
+                                                                      [AEpoch 22: 100%|██████████| 5/5 [00:30<00:00,  6.10s/it, v_num=z7ks][23:23:49] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=22-step=115.ckpt                  
+Epoch 22:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 23:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 23:  20%|██        | 1/5 [00:03<00:14,  3.68s/it, v_num=z7ks]Epoch 23:  20%|██        | 1/5 [00:03<00:14,  3.68s/it, v_num=z7ks]Epoch 23:  40%|████      | 2/5 [00:07<00:10,  3.66s/it, v_num=z7ks]Epoch 23:  40%|████      | 2/5 [00:07<00:10,  3.66s/it, v_num=z7ks]Epoch 23:  60%|██████    | 3/5 [00:11<00:07,  3.71s/it, v_num=z7ks]Epoch 23:  60%|██████    | 3/5 [00:11<00:07,  3.71s/it, v_num=z7ks]Epoch 23:  80%|████████  | 4/5 [00:14<00:03,  3.69s/it, v_num=z7ks]Epoch 23:  80%|████████  | 4/5 [00:14<00:03,  3.69s/it, v_num=z7ks]Epoch 23: 100%|██████████| 5/5 [00:18<00:00,  3.66s/it, v_num=z7ks]Epoch 23: 100%|██████████| 5/5 [00:18<00:00,  3.66s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 197.20it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:02<00:04,  1.14s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.39s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.51s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:08<00:01,  1.66s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:10<00:00,  1.71s/it][AEpoch 23: 100%|██████████| 5/5 [00:30<00:00,  6.10s/it, v_num=z7ks]
+                                                                      [AEpoch 23: 100%|██████████| 5/5 [00:30<00:00,  6.10s/it, v_num=z7ks][23:24:20] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=23-step=120.ckpt                  
+Epoch 23:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 24:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 24:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 24:  20%|██        | 1/5 [00:03<00:14,  3.59s/it, v_num=z7ks]Epoch 24:  40%|████      | 2/5 [00:07<00:10,  3.60s/it, v_num=z7ks]Epoch 24:  40%|████      | 2/5 [00:07<00:10,  3.60s/it, v_num=z7ks]Epoch 24:  60%|██████    | 3/5 [00:10<00:07,  3.60s/it, v_num=z7ks]Epoch 24:  60%|██████    | 3/5 [00:10<00:07,  3.60s/it, v_num=z7ks]Epoch 24:  80%|████████  | 4/5 [00:14<00:03,  3.59s/it, v_num=z7ks]Epoch 24:  80%|████████  | 4/5 [00:14<00:03,  3.59s/it, v_num=z7ks]Epoch 24: 100%|██████████| 5/5 [00:17<00:00,  3.57s/it, v_num=z7ks]Epoch 24: 100%|██████████| 5/5 [00:17<00:00,  3.57s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 190.48it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:02<00:04,  1.07s/it] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:04<00:04,  1.35s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:06<00:03,  1.50s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.59s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.66s/it][AEpoch 24: 100%|██████████| 5/5 [00:29<00:00,  5.94s/it, v_num=z7ks]
+                                                                      [AEpoch 24: 100%|██████████| 5/5 [00:29<00:00,  5.94s/it, v_num=z7ks][23:24:50] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=24-step=125.ckpt                  
+Epoch 24:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 25:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 25:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 25:  20%|██        | 1/5 [00:03<00:14,  3.57s/it, v_num=z7ks]Epoch 25:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 25:  40%|████      | 2/5 [00:07<00:10,  3.56s/it, v_num=z7ks]Epoch 25:  60%|██████    | 3/5 [00:10<00:07,  3.56s/it, v_num=z7ks]Epoch 25:  60%|██████    | 3/5 [00:10<00:07,  3.56s/it, v_num=z7ks]Epoch 25:  80%|████████  | 4/5 [00:15<00:03,  3.97s/it, v_num=z7ks]Epoch 25:  80%|████████  | 4/5 [00:15<00:03,  3.97s/it, v_num=z7ks]Epoch 25: 100%|██████████| 5/5 [00:19<00:00,  3.88s/it, v_num=z7ks]Epoch 25: 100%|██████████| 5/5 [00:19<00:00,  3.88s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 192.87it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.04it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.43s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.53s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.59s/it][AEpoch 25: 100%|██████████| 5/5 [00:31<00:00,  6.24s/it, v_num=z7ks]
+                                                                      [AEpoch 25: 100%|██████████| 5/5 [00:31<00:00,  6.24s/it, v_num=z7ks][23:25:21] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=25-step=130.ckpt                  
+Epoch 25:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 26:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 26:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 26:  20%|██        | 1/5 [00:03<00:14,  3.53s/it, v_num=z7ks]Epoch 26:  40%|████      | 2/5 [00:07<00:11,  3.85s/it, v_num=z7ks]Epoch 26:  40%|████      | 2/5 [00:07<00:11,  3.85s/it, v_num=z7ks]Epoch 26:  60%|██████    | 3/5 [00:11<00:07,  3.74s/it, v_num=z7ks]Epoch 26:  60%|██████    | 3/5 [00:11<00:07,  3.74s/it, v_num=z7ks]Epoch 26:  80%|████████  | 4/5 [00:15<00:03,  3.86s/it, v_num=z7ks]Epoch 26:  80%|████████  | 4/5 [00:15<00:03,  3.86s/it, v_num=z7ks]Epoch 26: 100%|██████████| 5/5 [00:19<00:00,  3.81s/it, v_num=z7ks]Epoch 26: 100%|██████████| 5/5 [00:19<00:00,  3.81s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 193.12it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.32s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.46s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.60s/it][AEpoch 26: 100%|██████████| 5/5 [00:30<00:00,  6.12s/it, v_num=z7ks]
+                                                                      [AEpoch 26: 100%|██████████| 5/5 [00:30<00:00,  6.12s/it, v_num=z7ks][23:25:52] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=26-step=135.ckpt                  
+Epoch 26:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 27:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 27:  20%|██        | 1/5 [00:03<00:14,  3.56s/it, v_num=z7ks]Epoch 27:  20%|██        | 1/5 [00:03<00:14,  3.56s/it, v_num=z7ks]Epoch 27:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 27:  40%|████      | 2/5 [00:07<00:10,  3.57s/it, v_num=z7ks]Epoch 27:  60%|██████    | 3/5 [00:10<00:07,  3.63s/it, v_num=z7ks]Epoch 27:  60%|██████    | 3/5 [00:10<00:07,  3.63s/it, v_num=z7ks]Epoch 27:  80%|████████  | 4/5 [00:14<00:03,  3.61s/it, v_num=z7ks]Epoch 27:  80%|████████  | 4/5 [00:14<00:03,  3.61s/it, v_num=z7ks]Epoch 27: 100%|██████████| 5/5 [00:18<00:00,  3.63s/it, v_num=z7ks]Epoch 27: 100%|██████████| 5/5 [00:18<00:00,  3.63s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 197.23it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.27s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.41s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.51s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.57s/it][AEpoch 27: 100%|██████████| 5/5 [00:29<00:00,  5.97s/it, v_num=z7ks]
+                                                                      [AEpoch 27: 100%|██████████| 5/5 [00:29<00:00,  5.97s/it, v_num=z7ks][23:26:22] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=27-step=140.ckpt                  
+Epoch 27:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 28:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 28:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 28:  20%|██        | 1/5 [00:03<00:14,  3.58s/it, v_num=z7ks]Epoch 28:  40%|████      | 2/5 [00:07<00:11,  3.87s/it, v_num=z7ks]Epoch 28:  40%|████      | 2/5 [00:07<00:11,  3.87s/it, v_num=z7ks]Epoch 28:  60%|██████    | 3/5 [00:11<00:07,  3.85s/it, v_num=z7ks]Epoch 28:  60%|██████    | 3/5 [00:11<00:07,  3.85s/it, v_num=z7ks]Epoch 28:  80%|████████  | 4/5 [00:15<00:03,  3.85s/it, v_num=z7ks]Epoch 28:  80%|████████  | 4/5 [00:15<00:03,  3.85s/it, v_num=z7ks]Epoch 28: 100%|██████████| 5/5 [00:19<00:00,  3.97s/it, v_num=z7ks]Epoch 28: 100%|██████████| 5/5 [00:19<00:00,  3.97s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 181.27it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.01it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.29s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.45s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.56s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.62s/it][AEpoch 28: 100%|██████████| 5/5 [00:31<00:00,  6.29s/it, v_num=z7ks]
+                                                                      [AEpoch 28: 100%|██████████| 5/5 [00:31<00:00,  6.29s/it, v_num=z7ks][23:26:54] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=28-step=145-v1.ckpt               
+Epoch 28:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]        Epoch 29:   0%|          | 0/5 [00:00<?, ?it/s, v_num=z7ks]Epoch 29:  20%|██        | 1/5 [00:03<00:13,  3.49s/it, v_num=z7ks]Epoch 29:  20%|██        | 1/5 [00:03<00:13,  3.49s/it, v_num=z7ks]Epoch 29:  40%|████      | 2/5 [00:07<00:10,  3.66s/it, v_num=z7ks]Epoch 29:  40%|████      | 2/5 [00:07<00:10,  3.66s/it, v_num=z7ks]Epoch 29:  60%|██████    | 3/5 [00:10<00:07,  3.63s/it, v_num=z7ks]Epoch 29:  60%|██████    | 3/5 [00:10<00:07,  3.63s/it, v_num=z7ks]Epoch 29:  80%|████████  | 4/5 [00:14<00:03,  3.62s/it, v_num=z7ks]Epoch 29:  80%|████████  | 4/5 [00:14<00:03,  3.62s/it, v_num=z7ks]Epoch 29: 100%|██████████| 5/5 [00:18<00:00,  3.67s/it, v_num=z7ks]Epoch 29: 100%|██████████| 5/5 [00:18<00:00,  3.67s/it, v_num=z7ks]
+Validation: 0it [00:00, ?it/s][A
+Validation:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/6 [00:00<?, ?it/s][A
+Validation DataLoader 0:  17%|█▋        | 1/6 [00:00<00:00, 192.68it/s][A
+Validation DataLoader 0:  33%|███▎      | 2/6 [00:01<00:03,  1.05it/s] [A
+Validation DataLoader 0:  50%|█████     | 3/6 [00:03<00:03,  1.28s/it][A
+Validation DataLoader 0:  67%|██████▋   | 4/6 [00:05<00:02,  1.43s/it][A
+Validation DataLoader 0:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it][A
+Validation DataLoader 0: 100%|██████████| 6/6 [00:09<00:00,  1.59s/it][AEpoch 29: 100%|██████████| 5/5 [00:29<00:00,  5.97s/it, v_num=z7ks]
+                                                                      [AEpoch 29: 100%|██████████| 5/5 [00:29<00:00,  5.97s/it, v_num=z7ks][23:27:24] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/checkpoints/epoch=29-step=150-v1.ckpt               
+`Trainer.fit` stopped: `max_epochs=30` reached.
+Epoch 29: 100%|██████████| 5/5 [00:30<00:00,  6.01s/it, v_num=z7ks]You are using a CUDA device ('A100-PCIE-40GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+SLURM auto-requeueing enabled. Setting signal handlers.
+
+Testing: 0it [00:00, ?it/s]Testing:   0%|          | 0/5 [00:00<?, ?it/s]Testing DataLoader 0:   0%|          | 0/5 [00:00<?, ?it/s]Testing DataLoader 0:  20%|██        | 1/5 [00:00<00:00, 145.82it/s]Testing DataLoader 0:  40%|████      | 2/5 [00:01<00:02,  1.05it/s] Testing DataLoader 0:  60%|██████    | 3/5 [00:03<00:02,  1.29s/it]Testing DataLoader 0:  80%|████████  | 4/5 [00:05<00:01,  1.45s/it]Testing DataLoader 0: 100%|██████████| 5/5 [00:07<00:00,  1.54s/it]Testing DataLoader 0: 100%|██████████| 5/5 [00:07<00:00,  1.54s/it]
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃        Test metric        ┃       DataLoader 0        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         test_loss         │    0.3505268096923828     │
+└───────────────────────────┴───────────────────────────┘
+[23:27:34] DEBUG    open file:                                      local.py:279
+                    /scratch4/jgray21/jchen291/Protein-Protein-Inte             
+                    raction/cl_attention_model.pt                               
+           INFO     Model state dict saved for CL Attention model    main.py:104
+wandb: Waiting for W&B process to finish... (success).
+wandb: 
+wandb: Run history:
+wandb:               epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇███
+wandb:           test_loss ▁
+wandb:          train_loss █▄▃▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: trainer/global_step ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇███
+wandb:            val_loss █▅▄▄▃▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:               epoch 30
+wandb:           test_loss 0.35053
+wandb:          train_loss 0.28677
+wandb: trainer/global_step 150
+wandb:            val_loss 0.3123
+wandb: 
+wandb: 🚀 View run CL_AttentionModel at: https://wandb.ai/jacky291/PPI/runs/cqppz7ks
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20230507_231206-cqppz7ks/logs
+[23:27:40] DEBUG    Starting new HTTPS connection (1):    connectionpool.py:1048
+                    o151352.ingest.sentry.io:443                                
+           DEBUG    https://o151352.ingest.sentry.io:443   connectionpool.py:546
+                    "POST /api/4504800232407040/envelope/                       
+                    HTTP/1.1" 200 0                                             

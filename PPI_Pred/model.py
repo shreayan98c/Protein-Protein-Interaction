@@ -243,16 +243,16 @@ class SiameseNetworkPretrainer(nn.Module):
 class SiameseNetworkClassification(nn.Module):
     def __init__(self):
         from PPI_Pred.utils import LitContrastivePretrainer
-        from PPI_Pred.CL_Attention import CL_AttentionModel
+        from PPI_Pred.CL_Attention import CL_Attention_ConvModel
         super(SiameseNetworkClassification, self).__init__()
 
         # if loading from .pt file
-        # MAX_LEN = 500
-        # self.pretrained_model = CL_AttentionModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN)
-        # self.pretrained_model.load_state_dict(torch.load("CL_Attention_ConvModel.pt"))
+        MAX_LEN = 500
+        self.pretrained_model = CL_Attention_ConvModel(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN,conv_dim=320)
+        self.pretrained_model.load_state_dict(torch.load("CL_Attention_ConvModel.pt"))
 
         # else if loading from .ckpt file
-        pt_model = LitContrastivePretrainer.load_from_checkpoint("siamese_pretrained.ckpt")
+        pt_model = LitContrastivePretrainer.load_from_checkpoint("checkpoints/epoch=19-step=13660.ckpt")
         self.pretrained_model = pt_model.model
         self.pretrained_model.eval()
         print('Loaded the pretrained model trained on Contrastive Loss')

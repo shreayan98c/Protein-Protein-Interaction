@@ -65,7 +65,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # simple_self_attention_block = SelfAttentionBlock(embed_dim=500, num_heads=5, ff_dim=20)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_model, split=True)
     # lightning_model_wrapper = LitNonContrastiveClassifier(simple_cross_attention_block)
-
+    
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
     lightning_model_wrapper = LitContrastiveClassifier()
@@ -77,7 +77,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #                                                                           ff_dim=20, seq_len=62, conv_dim=320))
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="SiameseClassifier")
+    wandb_logger = WandbLogger(project="PPI", name="Siamese_Conv_Attention_Classifier")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
@@ -88,11 +88,11 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     # if there is a saved checkpoint, place the checkpoint file in the same directory as this file
     # rename the checkpoint file to checkpoint.ckpt so that the trainer can resume from the checkpoint
-    if os.path.exists("checkpoint.ckpt"):
-        # trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
-        lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(
-            checkpoint_path="checkpoint.ckpt")
-        log.info("Found existing checkpoint.ckpt, loaded model")
+    # if os.path.exists("checkpoint.ckpt"):
+    #     # trainer = pl.Trainer(resume_from_checkpoint="checkpoint.ckpt", max_epochs=epochs, logger=wandb_logger)
+    #     lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(
+    #         checkpoint_path="checkpoint.ckpt")
+    #     log.info("Found existing checkpoint.ckpt, loaded model")
 
     trainer.fit(model=lightning_model_wrapper,
                 train_dataloaders=train_dataloader,

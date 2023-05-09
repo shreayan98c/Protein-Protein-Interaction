@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/scratch4/jgray21/jchen291/Protein-Protein-Interaction/main.py", line 8, in <module>
+    from PPI_Pred.CL_Attention import CL_AttentionModel, CL_Attention_ConvModel
+  File "/scratch4/jgray21/jchen291/Protein-Protein-Interaction/PPI_Pred/CL_Attention.py", line 184
+    """
+    ^
+IndentationError: expected an indented block
