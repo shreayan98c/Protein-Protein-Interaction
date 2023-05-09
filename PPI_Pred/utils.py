@@ -8,7 +8,7 @@ from rich.progress import track
 from PPI_Pred.losses import ContrastiveLoss
 import lightning.pytorch as pl
 from lightning.pytorch.loggers import WandbLogger
-from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification
+from PPI_Pred.model import SimpleLinearModel, SiameseNetwork, SiameseNetworkClassification, SiameseNetworkPretrainer
 
 log = logging.getLogger(__name__)
 
@@ -431,3 +431,24 @@ def train_siamese_classification_model(
                 correct += (predicted == target).sum().item()
 
         log.info(f"Epoch {epoch} accuracy: {correct / total:.4f}")
+
+
+def convert_checkpoint_to_model(ckpt_filepath, save_path):
+    """
+    Sample usage:
+
+    from PPI_Pred.utils import convert_checkpoint_to_model
+
+    convert_checkpoint_to_model('E:\\BlueJayCodes\\DL\\checkpoints\\SiamesePretrain\\epoch=1-step=2738.ckpt',
+                                'E:\\BlueJayCodes\\DL\\checkpoints\\SiamesePretrain\\siamese_pretrained.pt')
+
+    """
+
+    MAX_LEN = 500
+
+    # replace the model wrapper by the type of model you want to load here
+    lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
+    lightning_model_wrapper = lightning_model_wrapper.load_from_checkpoint(checkpoint_path=ckpt_filepath)
+    print('Model checkpoint loaded!')
+    torch.save(lightning_model_wrapper.model, save_path)
+    print('Model saved!')

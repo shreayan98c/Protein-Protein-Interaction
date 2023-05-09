@@ -245,7 +245,7 @@ class SiameseNetworkClassification(nn.Module):
         from PPI_Pred.utils import LitContrastivePretrainer
         super(SiameseNetworkClassification, self).__init__()
 
-        pt_model = LitContrastivePretrainer.load_from_checkpoint("siamese_pretrained.pt")
+        pt_model = LitContrastivePretrainer.load_from_checkpoint("siamese_pretrained.ckpt")
         self.pretrained_model = pt_model.model
         self.pretrained_model.eval()
         print('Loaded the pretrained model trained on Contrastive Loss')

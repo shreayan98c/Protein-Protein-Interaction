@@ -68,16 +68,16 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
-    # lightning_model_wrapper = LitContrastiveClassifier()
+    lightning_model_wrapper = LitContrastiveClassifier()
 
     # final model run wrappers
     # lightning_model_wrapper = LitContrastivePretrainer(CL_AttentionModel(embed_dim=320, num_heads=5,
     #                                                                      ff_dim=20, seq_len=MAX_LEN))
-    lightning_model_wrapper = LitContrastivePretrainer(CL_Attention_ConvModel(embed_dim=64, num_heads=8,
-                                                                              ff_dim=20, seq_len=62, conv_dim=320))
+    # lightning_model_wrapper = LitContrastivePretrainer(CL_Attention_ConvModel(embed_dim=64, num_heads=8,
+    #                                                                           ff_dim=20, seq_len=62, conv_dim=320))
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="CL_Attention_ConvModel")
+    wandb_logger = WandbLogger(project="PPI", name="SiameseClassifier")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
@@ -101,22 +101,22 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     # test the model
     trainer.test(model=lightning_model_wrapper, dataloaders=test_dataloader)
 
-    if isinstance(lightning_model_wrapper.model, CL_AttentionModel):
+    if hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, CL_AttentionModel):
         trainer.save_checkpoint("cl_attention_model.pt", weights_only=True)
         log.info("Model state dict saved for CL Attention model")
 
-    elif isinstance(lightning_model_wrapper.model, CL_Attention_ConvModel):
+    elif hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, CL_Attention_ConvModel):
         trainer.save_checkpoint("siamese_attention_model.pt", weights_only=True)
         log.info("Model state dict saved for Siamese Attention model")
 
-    elif isinstance(lightning_model_wrapper.model, SiameseNetworkPretrainer):
+    elif hasattr(lightning_model_wrapper, 'model') and isinstance(lightning_model_wrapper.model, SiameseNetworkPretrainer):
         trainer.save_checkpoint("siamese_pretrained.pt", weights_only=True)
         log.info("Model state dict saved for Siamese model with contrastive loss")
 
     else:
         trainer.save_checkpoint(
-            f"model_weights_{type(lightning_model_wrapper.model).__name__}.pt", weights_only=True)
-        log.info(f"Model state dict saved for {type(lightning_model_wrapper.model).__name__}")
+            f"model_weights_{type(lightning_model_wrapper).__name__}.pt", weights_only=True)
+        log.info(f"Model state dict saved for {type(lightning_model_wrapper).__name__}")
 
 
 if __name__ == "__main__":
