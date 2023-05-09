@@ -77,7 +77,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
     #                                                                           ff_dim=20, seq_len=62, conv_dim=320))
 
     # Define WandB logger for experiment tracking
-    wandb_logger = WandbLogger(project="PPI", name="SiameseClassifier")
+    wandb_logger = WandbLogger(project="PPI", name="CL_Attention_Tuning")
 
     # Define a trainer and fit using it
     if not os.path.isdir('checkpoints'):
