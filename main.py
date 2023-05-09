@@ -68,7 +68,7 @@ def train(batch_size: int, epochs: int, lr: float, small_subset: bool, levels: i
 
     # lightning_model_wrapper = LitNonContrastiveClassifier(SiameseNetwork(d=MAX_LEN), split=True)
     # lightning_model_wrapper = LitContrastivePretrainer(SiameseNetworkPretrainer(d=MAX_LEN))
-    lightning_model_wrapper = LitContrastiveClassifier(CL_AttentionModelClassification(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN))
+    lightning_model_wrapper = LitNonContrastiveClassifier(CL_AttentionModelClassification(embed_dim=320, num_heads=5, ff_dim=20, seq_len=MAX_LEN), split=True)
 
     # final model run wrappers
     # lightning_model_wrapper = LitContrastivePretrainer(CL_AttentionModel(embed_dim=320, num_heads=5,
