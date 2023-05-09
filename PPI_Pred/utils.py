@@ -192,7 +192,6 @@ class LitContrastiveClassifier(pl.LightningModule):
         seq1, seq2, target = batch['seq1_encoded'].float(), batch['seq1_encoded'].float(), batch['label']
         target = target.unsqueeze(1).float()
         output = self.model(seq1, seq2)
-        print(target, output)
         val_loss = self.criterion(output, target)
         predicted = torch.round(output.data)
         self.val_acc(predicted, target)
